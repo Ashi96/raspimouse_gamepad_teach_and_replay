@@ -18,10 +18,10 @@ public:
 	int ls;
 	int rs;
 	int rf;
-	double log_lf;
+/*	double log_lf;
 	double log_ls;
 	double log_rs;
-	double log_rf;
+	double log_rf; */
 };
 
 #endif

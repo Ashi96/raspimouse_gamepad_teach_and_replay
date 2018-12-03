@@ -143,17 +143,17 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
-	double diff[4] = {	past->log_lf - last->log_lf,
+/*	double diff[4] = {	past->log_lf - last->log_lf,
 				past->log_ls - last->log_ls,
 				past->log_rs - last->log_rs,
-				past->log_rf - last->log_rf };
-	/*
-	double diff[4] = {	past->lf - last->lf,
-				past->ls - last->ls,
-				past->rs - last->rs,
-				past->rf - last->rf };
+				past->log_rf - last->log_rf };*/
+	
+	double diff[4] = {	(double)past->lf - (double)last->lf,
+				(double)past->ls - (double)last->ls,
+				(double)past->rs - (double)last->rs,
+				(double)past->rf - (double)last->rf };
 	//cout << diff[1] << '\t' << diff[2] << endl;
-	double diff[4] = {
+/*	double diff[4] = {
 		(past->lf + past->rf) - (last->lf + last->rf), ((past->lf + past->rf) + (last->lf + last->rf)),
 		(past->ls + past->rs) - (last->ls + last->rs), ((past->ls + past->rs) + (last->ls + last->rs)) };
 				*/
@@ -176,11 +176,15 @@ double ParticleFilter::likelihood(Observation *past, Observation *last)
 
 double ParticleFilter::likelihood(Observation *past, Observation *last, Action *past_a, Action *last_a)
 {
-	double diff[4] = {	past->log_lf - last->log_lf,
+/*	double diff[4] = {	past->log_lf - last->log_lf,
 				past->log_ls - last->log_ls,
 				past->log_rs - last->log_rs,
-				past->log_rf - last->log_rf };
+				past->log_rf - last->log_rf };*/
 
+	double diff[4] = {	(double)past->lf - (double)last->lf,
+				(double)past->ls - (double)last->ls,
+				(double)past->rs - (double)last->rs,
+				(double)past->rf - (double)last->rf };
 	double ans = 1.0;
 	for(double &d : diff){
 		ans /= (1 + fabs(d));
