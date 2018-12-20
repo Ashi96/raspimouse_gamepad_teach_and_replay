@@ -35,6 +35,10 @@ private:
 
 	void resampling(vector<Particle> *ps);
 	void normalize(void);
+
+	void lastobscoordinatetransformation(Observation *last);
+	double icplikelihood(Observation *past, Observation *last);
+
 };
 
 #endif

@@ -130,6 +130,9 @@ int main(int argc, char **argv)
 			bag_read = true;
 			pf.init();
 			spinOnce();
+
+			ep.coordinatetransformation();
+			
 			loop_rate.sleep();
 			continue;
 		}

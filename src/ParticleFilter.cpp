@@ -1,9 +1,12 @@
 #include <vector>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/SVD>
 #include "Particle.h"
 #include "ParticleFilter.h"
 #include "Observation.h"
 #include "Episodes.h"
 using namespace std;
+using Eigen::MatrixXd;
 
 ParticleFilter::ParticleFilter(int num, Episodes *ep)
 {
@@ -105,9 +108,15 @@ Action ParticleFilter::average(Episodes *ep)
 Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep, raspimouse_gamepad_teach_and_replay::PFoEOutput *out)
 {
 	out->eta = 0.0;
+	
+	lastobscoordinatetransformation(obs);
+
 	cout << "obs likelihood" << endl;
 	for(auto &p : particles){
-		double h = likelihood(episodes->obsAt(p.pos),obs);
+
+		double h = icplikelihood(episodes->obsAt(p.pos),obs);
+		
+		//double h = likelihood(episodes->obsAt(p.pos),obs);
 		//double h = likelihood(episodes->obsAt(p.pos),obs, episodes->actionAt(p.pos), act);
 		p.weight *= h;
 		out->eta += p.weight;
@@ -195,6 +204,43 @@ double ParticleFilter::likelihood(Observation *past, Observation *last, Action *
 	return ans;
 }
 
+double ParticleFilter::icplikelihood(Observation *past, Observation *last)
+{
+	MatrixXd w;
+	MatrixXd s, u, v;
+	MatrixXd R, t;
+	MatrixXd mpast, mlast;
+	MatrixXd mm(3, 1);
+	MatrixXd ms(3, 1);
+	for(int i = 0; i < past->ct_linear_x.size(); i++)
+		mpast(0, i) = past->ct_linear_x[i];
+	for(int i = 0; i < past->ct_linear_y.size(); i++)
+		mpast(1, i) = past->ct_linear_y[i];
+	for(int i = 0; i < past->ct_theta.size(); i++)
+		mpast(2, i) = past->ct_theta[i];
+	for(int i = 0; i < last->ct_linear_x.size(); i++)
+		mlast(0, i) = last->ct_linear_x[i];
+	for(int i = 0; i < last->ct_linear_y.size(); i++)
+		mlast(0, i) = last->ct_linear_y[i];
+	for(int i = 0; i < last->ct_theta.size(); i++)
+		mlast(0, i) = last->ct_theta[i];
+	w = mpast * mlast.transpose();
+	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	s = svd.singularValues();
+	u = svd.matrixU();
+	v = svd.matrixV();
+	R = u * v;
+	mm(0, 0) = past->centroid_x;
+	mm(1, 0) = 0.0;
+	mm(2, 0) = past->centroid_y;
+	ms(0, 0) = last->centroid_x;
+	ms(1, 0) = 0.0;
+	ms(2, 0) = last->centroid_y;
+	t = mm - R * ms;
+	double ans;
+	ans = (1.0 / (1.0 + fabs(t(0,0)))) * (1.0 / (1.0 + fabs(t(2.0)))) * (1.0 / (1.0 + fabs(acos(R(0,0)))));
+	return ans;
+}
 
 void ParticleFilter::resampling(vector<Particle> *ps)
 {
@@ -267,6 +313,29 @@ void ParticleFilter::motionUpdate(Episodes *ep)
 		if(p.pos >= ep->data.size()-1)
 			p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
 
+	}
+}
+
+void lastobscoordinatetransformation(Observation *last){
+	double ct_x[4], ct_y[4], ct_theta[4];
+	ct_x[0] = last->lf * sin(-3 * 3.141592 / 180.0);
+	ct_y[0] = last->lf * cos(-3 * 3.141592 / 180.0);
+	ct_theta[0] = -3.0;
+	ct_x[1] = last->ls * sin(-45 * 3.141592 / 180.0);
+	ct_y[1] = last->ls * cos(-45 * 3.141592 / 180.0);
+	ct_theta[1] = -45.0;
+	ct_x[2] = last->rs * sin(45 * 3.141592 / 180.0);
+	ct_y[2] = last->rs * cos(45 * 3.141592 / 180.0);
+	ct_theta[2] = 45.0;
+	ct_x[3] = last->rf * sin(3 * 3.141592 / 180.0);
+	ct_y[3] = last->rf * cos(3 * 3.141592 / 180.0);
+	ct_theta[3] = 3.0;
+	last->centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0;
+	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0;
+	for(int i = 0; i < 4; i++){
+		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
+		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
+		last->ct_theta.push_back(ct_theta[i]);
 	}
 }
 
