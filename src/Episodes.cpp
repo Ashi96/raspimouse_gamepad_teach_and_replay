@@ -1,5 +1,8 @@
 #include "Episodes.h"
 #include <iostream>
+#include <cmath>
+#include <eigen3/Eigen/Core>
+#include <eigen3/Eigen/SVD>
 using namespace std;
 
 Episodes::Episodes()
@@ -14,6 +17,34 @@ void Episodes::append(Event e)
 	data.push_back(e);
 
 	current_event_id++;
+}
+
+void Episodes::coordinatetransformation(void)
+{
+	double ct_x[4], ct_y[4], ct_theta[4];//[lf,ls,rs,rf]
+	for(auto e : data){
+		ct_x[0] = e.observation.lf * sin(-45 * 3.141592 / 180.0);
+		ct_y[0] = e.observation.lf * cos(-45 * 3.141592 / 180.0);
+		ct_theta[0] = -45.0;
+		ct_x[1] = e.observation.ls * sin(-3 * 3.141592 / 180.0);
+		ct_y[1] = e.observation.ls * cos(-3 * 3.141592 / 180.0);
+		ct_theta[1] = -3.0;
+		ct_x[2]= e.observation.rs * sin(3 * 3.141592 / 180.0);
+		ct_y[2] = e.observation.rs * cos(3 * 3.141592 / 180.0);
+		ct_theta[2] = 3.0;
+		ct_x[3] = e.observation.rf * sin(45 * 3.141592 / 180.0);
+		ct_y[3] = e.observation.rf * cos(45 * 3.141592 / 180.0);
+		ct_theta[3] = 45.0;
+		e.observation.centroid_x = 0;
+		e.observation.centroid_y = 0;
+		e.observation.centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0;	//4.0 <- number of sensors
+		e.observation.centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0;	//4.0 <- number of sensors{
+		for(int i = 0; i < 4; i++){
+			e.observation.ct_linear_x.push_back(ct_x[i] - e.observation.centroid_x);
+			e.observation.ct_linear_y.push_back(ct_y[i] - e.observation.centroid_y);
+			e.observation.ct_theta.push_back(ct_theta[i]);	
+		}
+	}
 }
 
 void Episodes::reset(void)

@@ -12,6 +12,9 @@ public:
 	vector<Event> data;
 
 	void append(Event e);
+
+	void coordinatetransformation(void);
+
 	void print(string filename = "");
 	//void renewEpisode(void);
 	void reset(void);
