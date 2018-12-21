@@ -7,7 +7,7 @@
 #include <signal.h>
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
-#include <ros/package.h> 
+#include <ros/package.h>
 #include "std_srvs/Trigger.h"
 #include "geometry_msgs/Twist.h"
 #include "raspimouse_ros_2/LightSensorValues.h"
@@ -20,7 +20,7 @@
 using namespace ros;
 
 Episodes ep;
-ParticleFilter pf(1000,&ep);
+ParticleFilter pf(100, &ep);
 
 Observation sensor_values;
 
@@ -32,24 +32,24 @@ bool bag_read = false;
 
 const double pi = 3.141592;
 
-void buttonCallback(const raspimouse_ros_2::ButtonValues::ConstPtr& msg)
+void buttonCallback(const raspimouse_ros_2::ButtonValues::ConstPtr &msg)
 {
 	on = msg->mid_toggle;
 }
 
-void sensorCallback(const sensor_msgs::LaserScan::ConstPtr& msg)
+void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
-	int lf = (-pi*3.0/180 - msg->angle_min)/msg->angle_increment; 
-	int rf = (pi*3.0/180 - msg->angle_min)/msg->angle_increment; 
-	int ls = (-pi*45.0/180 - msg->angle_min)/msg->angle_increment; 
-	int rs = (pi*45.0/180 - msg->angle_min)/msg->angle_increment; 
+	int lf = (-pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int rf = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int ls = (-pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int rs = (pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
 
-	double lfv = isnan(msg->ranges[lf]) ? 500.0 : msg->ranges[lf]*1000;
-	double rfv = isnan(msg->ranges[rf]) ? 500.0 : msg->ranges[rf]*1000;
-	double rsv = isnan(msg->ranges[rs]) ? 500.0 : msg->ranges[rs]*1000;
-	double lsv = isnan(msg->ranges[ls]) ? 500.0 : msg->ranges[ls]*1000;
+	double lfv = isnan(msg->ranges[lf]) ? 500.0 : msg->ranges[lf] * 1000;
+	double rfv = isnan(msg->ranges[rf]) ? 500.0 : msg->ranges[rf] * 1000;
+	double rsv = isnan(msg->ranges[rs]) ? 500.0 : msg->ranges[rs] * 1000;
+	double lsv = isnan(msg->ranges[ls]) ? 500.0 : msg->ranges[ls] * 1000;
 
-	sensor_values.setValues(lfv,lsv,rsv,rfv);
+	sensor_values.setValues(lfv, lsv, rsv, rfv);
 }
 
 void on_shutdown(int sig)
@@ -69,32 +69,33 @@ void readEpisodes(string file)
 
 	vector<std::string> topics;
 	topics.push_back("/event");
-	
+
 	rosbag::View view(bag1, rosbag::TopicQuery(topics));
 
 	double start = view.getBeginTime().toSec() + 5.0; //discard first 5 sec
-	double end = view.getEndTime().toSec() - 5.0; //discard last 5 sec
-	for(auto i : view){
-	        auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
+	double end = view.getEndTime().toSec() - 5.0;	 //discard last 5 sec
+	for (auto i : view)
+	{
+		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
 
-		Observation obs(s->left_forward,s->left_side,s->right_side,s->right_forward);
-		Action a = {s->linear_x,s->angular_z};
-		Event e(obs,a,0.0);
+		Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
+		Action a = {s->linear_x, s->angular_z};
+		Event e(obs, a, 0.0);
 		e.time = i.getTime();
 
-		if(e.time.toSec() < start)
+		if (e.time.toSec() < start)
 			continue;
 
 		ep.append(e);
 
-		if(e.time.toSec() > end)
+		if (e.time.toSec() > end)
 			break;
 	}
 }
 
 int main(int argc, char **argv)
 {
-	init(argc,argv,"go_around");
+	init(argc, argv, "go_around");
 	NodeHandle n;
 	np = &n;
 
@@ -115,15 +116,19 @@ int main(int argc, char **argv)
 	geometry_msgs::Twist msg;
 	pf.init();
 	Rate loop_rate(10);
-	Action act = {0.0,0.0};
-	while(ok()){
-		if(not on){
+	Action act = {0.0, 0.0};
+	while (ok())
+	{
+		if (not on)
+		{
 			cout << "idle" << endl;
 			bag_read = false;
 			spinOnce();
 			loop_rate.sleep();
 			continue;
-		}else if(not bag_read){
+		}
+		else if (not bag_read)
+		{
 			string bagfile;
 			n.getParam("/current_bag_file", bagfile);
 			readEpisodes(bagfile);
@@ -132,7 +137,7 @@ int main(int argc, char **argv)
 			spinOnce();
 
 			ep.coordinatetransformation();
-			
+
 			loop_rate.sleep();
 			continue;
 		}

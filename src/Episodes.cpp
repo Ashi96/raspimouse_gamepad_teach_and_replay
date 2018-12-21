@@ -21,8 +21,9 @@ void Episodes::append(Event e)
 
 void Episodes::coordinatetransformation(void)
 {
-	double ct_x[4], ct_y[4], ct_theta[4];//[lf,ls,rs,rf]
-	for(auto e : data){
+	double ct_x[4], ct_y[4], ct_theta[4]; //[lf,ls,rs,rf]
+	for (auto &e : data)
+	{
 		ct_x[0] = e.observation.lf * sin(-3 * 3.141592 / 180.0);
 		ct_y[0] = e.observation.lf * cos(-3 * 3.141592 / 180.0);
 		ct_theta[0] = -3.0;
@@ -37,12 +38,13 @@ void Episodes::coordinatetransformation(void)
 		ct_theta[3] = 3.0;
 		e.observation.centroid_x = 0;
 		e.observation.centroid_y = 0;
-		e.observation.centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0;	//4.0 <- number of sensors
-		e.observation.centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0;	//4.0 <- number of sensors{
-		for(int i = 0; i < 4; i++){
+		e.observation.centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0; //4.0 <- number of sensors
+		e.observation.centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0; //4.0 <- number of sensors{
+		for (int i = 0; i < 4; i++)
+		{
 			e.observation.ct_linear_x.push_back(ct_x[i] - e.observation.centroid_x);
 			e.observation.ct_linear_y.push_back(ct_y[i] - e.observation.centroid_y);
-			e.observation.ct_theta.push_back(ct_theta[i]);	
+			e.observation.ct_theta.push_back(ct_theta[i]);
 		}
 	}
 }
@@ -65,36 +67,38 @@ void Episodes::print(string filename)
 {
 	ofstream ofs;
 	ostream *io;
-	if(filename == "")
+	if (filename == "")
 		io = &cout;
-	else{
+	else
+	{
 		ofs.open(filename);
 		io = &ofs;
 	}
-		
-		
-	for(auto e : data){
+
+	for (auto e : data)
+	{
 		*io << e.str() << endl;
 	}
 }
 
 Event *Episodes::At(int pos)
 {
-	if(pos < 0 || pos >= data.size())
+	if (pos < 0 || pos >= data.size())
 		return NULL;
 	return &(data[pos]);
 }
 
 Observation *Episodes::obsAt(int pos)
 {
-	if(pos < 0 || pos >= data.size())
+	if (pos < 0 || pos >= data.size())
 		return NULL;
 	return &(data[pos].observation);
 }
 
 Action *Episodes::actionAt(int pos)
 {
-	if(pos < 0 || pos >= data.size()){
+	if (pos < 0 || pos >= data.size())
+	{
 		cerr << "OUT OF INDEX at actionAt" << endl;
 		exit(1);
 		return NULL;
