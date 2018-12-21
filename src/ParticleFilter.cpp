@@ -111,6 +111,8 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 	
 	lastobscoordinatetransformation(obs);
 
+	cout << "size: " << obs->ct_linear_x.size() << endl;
+
 	cout << "obs likelihood" << endl;
 	for(auto &p : particles){
 
@@ -143,6 +145,11 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 	for(auto &p : particles){
 		out->particles_pos.push_back(p.pos);
 	}
+
+
+	obs->ct_linear_x.clear();
+	obs->ct_linear_y.clear();
+	obs->ct_theta.clear();
 
 	cout << "mode" << endl;
 	return mode(ep);
@@ -209,9 +216,12 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	MatrixXd w;
 	MatrixXd s, u, v;
 	MatrixXd R, t;
-	MatrixXd mpast, mlast;
+	MatrixXd mpast(3,past->ct_linear_x.size());
+	MatrixXd mlast(3,last->ct_linear_x.size());
 	MatrixXd mm(3, 1);
 	MatrixXd ms(3, 1);
+	cout << "size: " << past->ct_linear_x.size() << endl;
+	cout << "size: " << last->ct_linear_x.size() << endl;
 	for(int i = 0; i < past->ct_linear_x.size(); i++)
 		mpast(0, i) = past->ct_linear_x[i];
 	for(int i = 0; i < past->ct_linear_y.size(); i++)
@@ -221,9 +231,11 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	for(int i = 0; i < last->ct_linear_x.size(); i++)
 		mlast(0, i) = last->ct_linear_x[i];
 	for(int i = 0; i < last->ct_linear_y.size(); i++)
-		mlast(0, i) = last->ct_linear_y[i];
+		mlast(1, i) = last->ct_linear_y[i];
 	for(int i = 0; i < last->ct_theta.size(); i++)
-		mlast(0, i) = last->ct_theta[i];
+		mlast(2, i) = last->ct_theta[i];
+	cout << "mpast" << mpast << endl;
+	cout << "mlast" << mlast << endl;
 	w = mpast * mlast.transpose();
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	s = svd.singularValues();
