@@ -316,7 +316,7 @@ void ParticleFilter::motionUpdate(Episodes *ep)
 	}
 }
 
-void lastobscoordinatetransformation(Observation *last){
+void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	double ct_x[4], ct_y[4], ct_theta[4];
 	ct_x[0] = last->lf * sin(-3 * 3.141592 / 180.0);
 	ct_y[0] = last->lf * cos(-3 * 3.141592 / 180.0);
