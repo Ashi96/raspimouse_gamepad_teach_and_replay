@@ -214,31 +214,31 @@ double ParticleFilter::likelihood(Observation *past, Observation *last, Action *
 double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
 	MatrixXd w;
-	MatrixXd s, u, v;
+	//MatrixXd s;
+	MatrixXd u, v;
 	MatrixXd R, t;
-	MatrixXd mpast(3,past->ct_linear_x.size());
-	MatrixXd mlast(3,last->ct_linear_x.size());
+	MatrixXd mpast(3,4);	//4 <- Number of sensors
+	MatrixXd mlast(3,4);	//4 <- Number of sensors
 	MatrixXd mm(3, 1);
 	MatrixXd ms(3, 1);
-	cout << "size: " << past->ct_linear_x.size() << endl;
-	cout << "size: " << last->ct_linear_x.size() << endl;
-	for(int i = 0; i < past->ct_linear_x.size(); i++)
+	//cout << "size: " << past->ct_linear_x.size() << endl;
+	//cout << "size: " << last->ct_linear_x.size() << endl;
+	for(int i = 0; i < 4; i++){
 		mpast(0, i) = past->ct_linear_x[i];
-	for(int i = 0; i < past->ct_linear_y.size(); i++)
 		mpast(1, i) = past->ct_linear_y[i];
-	for(int i = 0; i < past->ct_theta.size(); i++)
 		mpast(2, i) = past->ct_theta[i];
-	for(int i = 0; i < last->ct_linear_x.size(); i++)
+	}
+	for(int i = 0; i < 4; i++){
 		mlast(0, i) = last->ct_linear_x[i];
-	for(int i = 0; i < last->ct_linear_y.size(); i++)
 		mlast(1, i) = last->ct_linear_y[i];
-	for(int i = 0; i < last->ct_theta.size(); i++)
 		mlast(2, i) = last->ct_theta[i];
+	}
+	//4 <- Number of sensors
 	cout << "mpast" << mpast << endl;
 	cout << "mlast" << mlast << endl;
 	w = mpast * mlast.transpose();
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
-	s = svd.singularValues();
+	//s = svd.singularValues();
 	u = svd.matrixU();
 	v = svd.matrixV();
 	R = u * v;
@@ -330,17 +330,26 @@ void ParticleFilter::motionUpdate(Episodes *ep)
 
 void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	double ct_x[4], ct_y[4], ct_theta[4];
-	ct_x[0] = last->lf * sin(-3 * 3.141592 / 180.0);
-	ct_y[0] = last->lf * cos(-3 * 3.141592 / 180.0);
+	constexpr double slf = sin(-3 * 3.141592 / 180.0);
+	constexpr double sls = sin(-45 * 3.141592 / 180.0);
+	constexpr double srs = sin(45 * 3.141592 / 180.0);
+	constexpr double srf = sin(3 * 3.141592 / 180.0);
+	constexpr double clf = cos(-3 * 3.141592 / 180.0);
+	constexpr double cls = cos(-45 * 3.141592 / 180.0);
+	constexpr double crs = cos(45 * 3.141592 / 180.0);
+	constexpr double crf = cos(3 * 3.141592 / 180.0);
+
+	ct_x[0] = last->lf * slf;
+	ct_y[0] = last->lf * clf;
 	ct_theta[0] = -3.0;
-	ct_x[1] = last->ls * sin(-45 * 3.141592 / 180.0);
-	ct_y[1] = last->ls * cos(-45 * 3.141592 / 180.0);
+	ct_x[1] = last->ls * sls;
+	ct_y[1] = last->ls * cls;
 	ct_theta[1] = -45.0;
-	ct_x[2] = last->rs * sin(45 * 3.141592 / 180.0);
-	ct_y[2] = last->rs * cos(45 * 3.141592 / 180.0);
+	ct_x[2] = last->rs * srs;
+	ct_y[2] = last->rs * crs;
 	ct_theta[2] = 45.0;
-	ct_x[3] = last->rf * sin(3 * 3.141592 / 180.0);
-	ct_y[3] = last->rf * cos(3 * 3.141592 / 180.0);
+	ct_x[3] = last->rf * srf;
+	ct_y[3] = last->rf * crf;
 	ct_theta[3] = 3.0;
 	last->centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0;
 	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0;

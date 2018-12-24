@@ -24,7 +24,7 @@ public:
 	double log_rf; */
 
 	vector<double> ct_theta;	//[lf_theta, ls_theta, rs_theta, rf_theta]
-	vector<double> ct_linear_x;	//zyuusin tyushin no zahyou
+	vector<double> ct_linear_x;
 	vector<double> ct_linear_y;
 	double centroid_x;
 	double centroid_y;

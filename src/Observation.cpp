@@ -5,6 +5,9 @@
 
 Observation::Observation()
 {
+	ct_theta.reserve(4);
+	ct_linear_x.reserve(4);
+	ct_linear_y.reserve(4);
 }
 
 Observation::Observation(int left_f,int left_s, int right_s, int right_f)
