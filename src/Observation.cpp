@@ -10,12 +10,12 @@ Observation::Observation()
 	ct_linear_y.reserve(4);
 }
 
-Observation::Observation(int left_f,int left_s, int right_s, int right_f)
+Observation::Observation(double left_f,double left_s, double right_s, double right_f)
 {
 	setValues(left_f,left_s,right_s,right_f);
 }
 
-void Observation::setValues(int left_f,int left_s, int right_s, int right_f)
+void Observation::setValues(double left_f,double left_s, double right_s, double right_f)
 {
 	lf = left_f > 0 ? left_f : 1;
 	ls = left_s > 0 ? left_s : 1;

@@ -111,7 +111,7 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 	
 	lastobscoordinatetransformation(obs);
 
-	cout << "size: " << obs->ct_linear_x.size() << endl;
+//	cout << "size: " << obs->ct_linear_x.size() << endl;
 
 	cout << "obs likelihood" << endl;
 	for(auto &p : particles){
@@ -215,7 +215,7 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
 	MatrixXd w;
 	//MatrixXd s;
-	MatrixXd u, v;
+	//MatrixXd u, v;
 	MatrixXd R, t;
 	MatrixXd mpast(3,4);	//4 <- Number of sensors
 	MatrixXd mlast(3,4);	//4 <- Number of sensors
@@ -234,14 +234,15 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 		mlast(2, i) = last->ct_theta[i];
 	}
 	//4 <- Number of sensors
-	cout << "mpast" << mpast << endl;
-	cout << "mlast" << mlast << endl;
+	//cout << "mpast" << mpast << endl;
+	//cout << "mlast" << mlast << endl;
 	w = mpast * mlast.transpose();
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
-	u = svd.matrixU();
+	/*u = svd.matrixU();
 	v = svd.matrixV();
-	R = u * v;
+	R = u * v;*/
+	R = svd.matrixU() * svd.matrixV();
 	mm(0, 0) = past->centroid_x;
 	mm(1, 0) = 0.0;
 	mm(2, 0) = past->centroid_y;

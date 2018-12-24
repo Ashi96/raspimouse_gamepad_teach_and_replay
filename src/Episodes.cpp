@@ -21,20 +21,30 @@ void Episodes::append(Event e)
 
 void Episodes::coordinatetransformation(void)
 {
-	double ct_x[4], ct_y[4], ct_theta[4]; //[lf,ls,rs,rf]
+	double ct_x[4], ct_y[4], ct_theta[4];
+	constexpr double slf = sin(-3 * 3.141592 / 180.0);
+        constexpr double sls = sin(-45 * 3.141592 / 180.0);
+        constexpr double srs = sin(45 * 3.141592 / 180.0);
+        constexpr double srf = sin(3 * 3.141592 / 180.0);
+        constexpr double clf = cos(-3 * 3.141592 / 180.0);
+        constexpr double cls = cos(-45 * 3.141592 / 180.0);
+        constexpr double crs = cos(45 * 3.141592 / 180.0);
+        constexpr double crf = cos(3 * 3.141592 / 180.0);
+
 	for (auto &e : data)
 	{
-		ct_x[0] = e.observation.lf * sin(-3 * 3.141592 / 180.0);
-		ct_y[0] = e.observation.lf * cos(-3 * 3.141592 / 180.0);
+		//e.observation.ct_theta = {-3, -45, 45, 3}; //[lf,ls,rs,rf]
+		ct_x[0] = e.observation.lf * slf;
+		ct_y[0] = e.observation.lf * clf;
 		ct_theta[0] = -3.0;
-		ct_x[1] = e.observation.ls * sin(-45 * 3.141592 / 180.0);
-		ct_y[1] = e.observation.ls * cos(-45 * 3.141592 / 180.0);
+		ct_x[1] = e.observation.ls * sls;
+		ct_y[1] = e.observation.ls * cls;
 		ct_theta[1] = -45.0;
-		ct_x[2] = e.observation.rs * sin(45 * 3.141592 / 180.0);
-		ct_y[2] = e.observation.rs * cos(45 * 3.141592 / 180.0);
+		ct_x[2] = e.observation.rs * srs;
+		ct_y[2] = e.observation.rs * crs;
 		ct_theta[2] = 45.0;
-		ct_x[3] = e.observation.rf * sin(3 * 3.141592 / 180.0);
-		ct_y[3] = e.observation.rf * cos(3 * 3.141592 / 180.0);
+		ct_x[3] = e.observation.rf * srf;
+		ct_y[3] = e.observation.rf * crf;
 		ct_theta[3] = 3.0;
 		e.observation.centroid_x = 0;
 		e.observation.centroid_y = 0;

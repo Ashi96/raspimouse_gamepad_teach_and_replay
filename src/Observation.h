@@ -10,9 +10,9 @@ using namespace std;
 class Observation{
 public:
 	Observation();
-	Observation(int left_f,int left_s, int right_s, int right_f);
+	Observation(double left_f,double left_s, double right_s, double right_f);
 
-	void setValues(int left_f,int left_s, int right_s, int right_f);
+	void setValues(double left_f,double left_s, double right_s, double right_f);
 
 	int lf;
 	int ls;
