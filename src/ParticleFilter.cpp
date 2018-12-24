@@ -250,8 +250,11 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	ms(1, 0) = 0.0;
 	ms(2, 0) = last->centroid_y;
 	t = mm - R * ms;
+	cout << "--------------------" << endl;
+	cout << "t :" << t << endl;
+	cout << "--------------------" << endl;
 	double ans;
-	ans = (1.0 / (1.0 + fabs(t(0,0)))) * (1.0 / (1.0 + fabs(t(2.0)))) * (1.0 / (1.0 + fabs(acos(R(0,0)))));
+	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	return ans;
 }
 
