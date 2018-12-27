@@ -39,10 +39,10 @@ void buttonCallback(const raspimouse_ros_2::ButtonValues::ConstPtr &msg)
 
 void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
-	int lf = (-pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
-	int rf = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
-	int ls = (-pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
-	int rs = (pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int lf = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int rf = (-pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int ls = (pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int rs = (-pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
 
 	double lfv = isnan(msg->ranges[lf]) ? 500.0 : msg->ranges[lf] * 1000;
 	double rfv = isnan(msg->ranges[rf]) ? 500.0 : msg->ranges[rf] * 1000;

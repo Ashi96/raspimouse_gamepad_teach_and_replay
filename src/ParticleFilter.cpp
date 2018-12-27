@@ -215,8 +215,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
 	MatrixXd w;
 	//MatrixXd s;
-	//MatrixXd u, v;
-	MatrixXd R, t;
+	MatrixXd u, v;
+	MatrixXd R1, R, t;
 	MatrixXd mpast(3,4);	//4 <- Number of sensors
 	MatrixXd mlast(3,4);	//4 <- Number of sensors
 	MatrixXd mm(3, 1);
@@ -239,10 +239,13 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	w = mpast * mlast.transpose();
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
-	/*u = svd.matrixU();
-	v = svd.matrixV();
-	R = u * v;*/
-	R = svd.matrixU() * svd.matrixV();
+	u = svd.matrixU();
+	v = svd.matrixV().transpose();
+	R1 = u * v;
+	R = R1.transpose();
+	/*cout << "--------------------" << endl;
+	cout << "R :" << R << endl;
+	cout << "--------------------" << endl;*/
 	mm(0, 0) = past->centroid_x;
 	mm(1, 0) = 0.0;
 	mm(2, 0) = past->centroid_y;
@@ -250,9 +253,9 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	ms(1, 0) = 0.0;
 	ms(2, 0) = last->centroid_y;
 	t = mm - R * ms;
-	cout << "--------------------" << endl;
+	/*cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
-	cout << "--------------------" << endl;
+	cout << "--------------------" << endl;*/
 	double ans;
 	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	return ans;

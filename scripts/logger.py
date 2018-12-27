@@ -52,10 +52,10 @@ class Logger():
 	a = self.cmd_vel
 	e = Event()
 
-	lf = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
-	rf = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
-	ls = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
-        rs = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+	rf = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+	lf = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+	rs = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+        ls = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
 
         e.left_side = 500.0 if math.isnan(s.ranges[ls]) else s.ranges[ls]*1000;
         e.right_side = 500.0  if math.isnan(s.ranges[rs]) else s.ranges[rs]*1000;
