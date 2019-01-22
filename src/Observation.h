@@ -10,18 +10,18 @@ using namespace std;
 class Observation{
 public:
 	Observation();
-	Observation(double left_f,double left_s, double right_s, double right_f);
+	Observation(int left_f,int left_s, int right_s, int right_f);
 
-	void setValues(double left_f,double left_s, double right_s, double right_f);
+	void setValues(int left_f,int left_s, int right_s, int right_f);
 
 	int lf;
 	int ls;
 	int rs;
 	int rf;
-/*	double log_lf;
+	double log_lf;
 	double log_ls;
 	double log_rs;
-	double log_rf; */
+	double log_rf;
 
 	vector<double> ct_theta;	//[lf_theta, ls_theta, rs_theta, rf_theta]
 	vector<double> ct_linear_x;

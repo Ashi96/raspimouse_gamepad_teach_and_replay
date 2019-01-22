@@ -21,7 +21,6 @@ void Episodes::append(Event e)
 
 void Episodes::coordinatetransformation(void)
 {
-	cout << "coord" << endl;
 	double ct_x[4], ct_y[4], ct_theta[4];
 	constexpr double slf = sin(-3 * 3.141592 / 180.0);
         constexpr double sls = sin(-45 * 3.141592 / 180.0);

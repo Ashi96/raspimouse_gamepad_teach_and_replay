@@ -252,8 +252,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	ms(0, 0) = last->centroid_x;
 	ms(1, 0) = 0.0;
 	ms(2, 0) = last->centroid_y;
-	t = mm - R * ms;
-	/*cout << "--------------------" << endl;
+	t = ms - R * mm;
+/*	cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
 	double ans;
@@ -316,7 +316,7 @@ void ParticleFilter::motionUpdate(Episodes *ep)
 	cout << "no odom" << endl;
 	init();
 */
-	cout << "odom" << endl;
+	//cout << "odom" << endl;
 	for(auto &p : particles){
 		if(rand() % 10 == 0){
 			p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
