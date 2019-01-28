@@ -217,23 +217,27 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	//MatrixXd s;
 	MatrixXd u, v;
 	MatrixXd R1, R, t;
-	MatrixXd mpast(3,4);	//4 <- Number of sensors
-	MatrixXd mlast(3,4);	//4 <- Number of sensors
-	MatrixXd mm(3, 1);
-	MatrixXd ms(3, 1);
+	/*MatrixXd mpast(3, 4);
+	MatrixXd mlast(3, 4);
+	MatrixXd mm(3,1);
+	MatrixXd ms(3,1);*/
+	MatrixXd mpast(2, 4);
+	MatrixXd mlast(2, 4);
+	MatrixXd mm(2,1);
+	MatrixXd ms(2,1);
 	//cout << "size: " << past->ct_linear_x.size() << endl;
 	//cout << "size: " << last->ct_linear_x.size() << endl;
+	//cout << "------debug------" << endl;
 	for(int i = 0; i < 4; i++){
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
-		mpast(2, i) = past->ct_theta[i];
+		//mpast(2, i) = past->ct_theta[i];
 	}
 	for(int i = 0; i < 4; i++){
 		mlast(0, i) = last->ct_linear_x[i];
 		mlast(1, i) = last->ct_linear_y[i];
-		mlast(2, i) = last->ct_theta[i];
+		//mlast(2, i) = last->ct_theta[i];
 	}
-	//4 <- Number of sensors
 	//cout << "mpast" << mpast << endl;
 	//cout << "mlast" << mlast << endl;
 	w = mpast * mlast.transpose();
@@ -246,18 +250,23 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	/*cout << "--------------------" << endl;
 	cout << "R :" << R << endl;
 	cout << "--------------------" << endl;*/
-	mm(0, 0) = past->centroid_x;
+	/*mm(0, 0) = past->centroid_x;
 	mm(1, 0) = 0.0;
 	mm(2, 0) = past->centroid_y;
 	ms(0, 0) = last->centroid_x;
 	ms(1, 0) = 0.0;
-	ms(2, 0) = last->centroid_y;
-	t = ms - R * mm;
+	ms(2, 0) = last->centroid_y;*/
+	mm(0, 0) = past->centroid_x;
+	mm(1, 0) = past->centroid_y;
+	ms(0, 0) = last->centroid_x;
+	ms(1, 0) = last->centroid_y;
+	t = mm - R * ms;
 /*	cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
 	double ans;
-	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	return ans;
 }
 
