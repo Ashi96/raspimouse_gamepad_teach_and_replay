@@ -17,10 +17,20 @@ string Event::str(void)
 	string id = to_string(event_id);
 	string a = to_string(action.linear_x) + '\t'
 		+ to_string(action.angular_z);
-	string s = to_string(observation.lf) + '\t'
+	/*string s = to_string(observation.lf) + '\t'
 		+ to_string(observation.ls) + '\t' 
 		+ to_string(observation.rs) + '\t' 
-		+ to_string(observation.rf);
+		+ to_string(observation.rf);*/
+	string s = to_string(observation.l1) + '\t'
+		+ to_string(observation.l2) + '\t' 
+		+ to_string(observation.l3) + '\t' 
+		+ to_string(observation.l4) + '\t' 
+		+ to_string(observation.l5) + '\t' 
+		+ to_string(observation.r1) + '\t' 
+		+ to_string(observation.r2) + '\t' 
+		+ to_string(observation.r3) + '\t' 
+		+ to_string(observation.r4) + '\t' 
+		+ to_string(observation.r5);
 
 	string t = to_string(time.toSec());
 

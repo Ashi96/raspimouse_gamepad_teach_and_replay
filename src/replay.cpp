@@ -39,7 +39,7 @@ void buttonCallback(const raspimouse_ros_2::ButtonValues::ConstPtr &msg)
 
 void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 {
-	int lf = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	/*int lf = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int rf = (-pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int ls = (pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int rs = (-pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
@@ -49,7 +49,30 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 	double rsv = isnan(msg->ranges[rs]) ? 500.0 : msg->ranges[rs] * 1000;
 	double lsv = isnan(msg->ranges[ls]) ? 500.0 : msg->ranges[ls] * 1000;
 
-	sensor_values.setValues(lfv, lsv, rsv, rfv);
+	sensor_values.setValues(lfv, lsv, rsv, rfv);*/
+	int l1 = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int l2 = (pi * 15.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int l3 = (pi * 30.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int l4 = (pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int l5 = (pi * 60.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int r1 = (-pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int r2 = (-pi * 15.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int r3 = (-pi * 30.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int r4 = (-pi * 45.0 / 180 - msg->angle_min) / msg->angle_increment;
+	int r5 = (-pi * 60.0 / 180 - msg->angle_min) / msg->angle_increment;
+
+	double l1v = isnan(msg->ranges[l1]) ? 500.0 : msg->ranges[l1] * 1000;
+	double l2v = isnan(msg->ranges[l2]) ? 500.0 : msg->ranges[l2] * 1000;
+	double l3v = isnan(msg->ranges[l3]) ? 500.0 : msg->ranges[l3] * 1000;
+	double l4v = isnan(msg->ranges[l4]) ? 500.0 : msg->ranges[l4] * 1000;
+	double l5v = isnan(msg->ranges[l5]) ? 500.0 : msg->ranges[l5] * 1000;
+	double r1v = isnan(msg->ranges[r1]) ? 500.0 : msg->ranges[r1] * 1000;
+	double r2v = isnan(msg->ranges[r2]) ? 500.0 : msg->ranges[r2] * 1000;
+	double r3v = isnan(msg->ranges[r3]) ? 500.0 : msg->ranges[r3] * 1000;
+	double r4v = isnan(msg->ranges[r4]) ? 500.0 : msg->ranges[r4] * 1000;
+	double r5v = isnan(msg->ranges[r5]) ? 500.0 : msg->ranges[r5] * 1000;
+
+	sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, r1v, r2v, r3v, r4v, r5v);
 }
 
 void on_shutdown(int sig)
@@ -78,7 +101,9 @@ void readEpisodes(string file)
 	{
 		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
 
-		Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
+		//Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
+		Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5);
+
 		Action a = {s->linear_x, s->angular_z};
 		Event e(obs, a, 0.0);
 		e.time = i.getTime();
@@ -149,10 +174,20 @@ int main(int argc, char **argv)
 		msg.angular.z = act.angular_z;
 		out.angular_z = act.angular_z;
 
-		out.left_forward = sensor_values.lf;
+		/*out.left_forward = sensor_values.lf;
 		out.left_side = sensor_values.ls;
 		out.right_forward = sensor_values.rf;
-		out.right_side = sensor_values.rs;
+		out.right_side = sensor_values.rs;*/
+		out.left_1 = sensor_values.l1;
+		out.left_2 = sensor_values.l2;
+		out.left_3 = sensor_values.l3;
+		out.left_4 = sensor_values.l4;
+		out.left_5 = sensor_values.l5;
+		out.right_1 = sensor_values.r1;
+		out.right_2 = sensor_values.r2;
+		out.right_3 = sensor_values.r3;
+		out.right_4 = sensor_values.r4;
+		out.right_5 = sensor_values.r5;
 
 		cmdvel.publish(msg);
 		pfoe_out.publish(out);

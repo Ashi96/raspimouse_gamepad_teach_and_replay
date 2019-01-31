@@ -36,38 +36,63 @@ class Logger():
         self.cmd_vel = messages
 
     def output_decision(self):
-	if not self.on:
-	    if self.bag_open:
-		self.bag.close()
-		self.bag_open = False
-	    return
-	else:
-	    if not self.bag_open:
-		filename = datetime.datetime.today().strftime("%Y%m%d_%H%M%S") + '.bag'
-		rosparam.set_param("/current_bag_file", filename)
-		self.bag = rosbag.Bag(filename, 'w')
-		self.bag_open = True
+			if not self.on:
+	    	if self.bag_open:
+					self.bag.close()
+					self.bag_open = False
+	    	return
+			else:
+	    	if not self.bag_open:
+					filename = datetime.datetime.today().strftime("%Y%m%d_%H%M%S") + '.bag'
+					rosparam.set_param("/current_bag_file", filename)
+					self.bag = rosbag.Bag(filename, 'w')
+					self.bag_open = True
 
-	s = self.sensor_values
-	a = self.cmd_vel
-	e = Event()
+			s = self.sensor_values
+			a = self.cmd_vel
+			e = Event()
 
-	rf = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
-	lf = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
-	rs = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
-        ls = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+			"""
+			rf = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+			lf = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+			rs = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+      ls = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
 
-        e.left_side = 500.0 if math.isnan(s.ranges[ls]) else s.ranges[ls]*1000;
-        e.right_side = 500.0  if math.isnan(s.ranges[rs]) else s.ranges[rs]*1000;
-        e.left_forward = 500.0 if math.isnan(s.ranges[lf]) else s.ranges[lf]*1000;
-        e.right_forward = 500.0 if math.isnan(s.ranges[rf]) else s.ranges[rf]*1000;
-        e.linear_x = a.linear.x
-        e.angular_z = a.angular.z
+      e.left_side = 500.0 if math.isnan(s.ranges[ls]) else s.ranges[ls]*1000;
+      e.right_side = 500.0  if math.isnan(s.ranges[rs]) else s.ranges[rs]*1000;
+      e.left_forward = 500.0 if math.isnan(s.ranges[lf]) else s.ranges[lf]*1000;
+      e.right_forward = 500.0 if math.isnan(s.ranges[rf]) else s.ranges[rf]*1000;
+      e.linear_x = a.linear.x
+      e.angular_z = a.angular.z
+			"""
+			r1 = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+			r2 = int((-math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
+			r3 = int((-math.pi*30.0/180 - s.angle_min)/s.angle_increment); 
+			r4 = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+			r5 = int((-math.pi*60.0/180 - s.angle_min)/s.angle_increment); 
+			l1 = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+			l2 = int((math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
+			l3 = int((math.pi*30.0/180 - s.angle_min)/s.angle_increment); 
+			l4 = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+			l5 = int((math.pi*60.0/180 - s.angle_min)/s.angle_increment); 
 
-        print(e)
+      e.left_1 = 500.0 if math.isnan(s.ranges[l1]) else s.ranges[l1]*1000;
+      e.left_2 = 500.0 if math.isnan(s.ranges[l2]) else s.ranges[l2]*1000;
+      e.left_3 = 500.0 if math.isnan(s.ranges[l3]) else s.ranges[l3]*1000;
+      e.left_4 = 500.0 if math.isnan(s.ranges[l4]) else s.ranges[l4]*1000;
+      e.left_5 = 500.0 if math.isnan(s.ranges[l5]) else s.ranges[l5]*1000;
+      e.right_1 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r1]*1000;
+      e.right_2 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r2]*1000;
+      e.right_3 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r3]*1000;
+      e.right_4 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r4]*1000;
+      e.right_5 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r5]*1000;
+      e.linear_x = a.linear.x
+      e.angular_z = a.angular.z
 
-        self._decision.publish(e)
-	self.bag.write('/event', e)
+      print(e)
+
+      self._decision.publish(e)
+			self.bag.write('/event', e)
 
     def run(self):
         rate = rospy.Rate(10)

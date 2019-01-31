@@ -156,46 +156,46 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 //	cout << "avg" << endl;
 //	return average(ep);
 }
-
+/*
 double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
-/*	double diff[4] = {	past->log_lf - last->log_lf,
-				past->log_ls - last->log_ls,
-				past->log_rs - last->log_rs,
-				past->log_rf - last->log_rf };*/
+	//double diff[4] = {	past->log_lf - last->log_lf,
+	//			past->log_ls - last->log_ls,
+	//			past->log_rs - last->log_rs,
+	//			past->log_rf - last->log_rf };
 	
 	double diff[4] = {	(double)past->lf - (double)last->lf,
 				(double)past->ls - (double)last->ls,
 				(double)past->rs - (double)last->rs,
 				(double)past->rf - (double)last->rf };
 	//cout << diff[1] << '\t' << diff[2] << endl;
-/*	double diff[4] = {
-		(past->lf + past->rf) - (last->lf + last->rf), ((past->lf + past->rf) + (last->lf + last->rf)),
-		(past->ls + past->rs) - (last->ls + last->rs), ((past->ls + past->rs) + (last->ls + last->rs)) };
-				*/
+//	double diff[4] = {
+//		(past->lf + past->rf) - (last->lf + last->rf), ((past->lf + past->rf) + (last->lf + last->rf)),
+//		(past->ls + past->rs) - (last->ls + last->rs), ((past->ls + past->rs) + (last->ls + last->rs)) };
+//				
 
-	/*
-	double ans = 1.0;
-	double sigma = 300;
-	double coef = 1.0 / (sqrt(2*sigma*sigma));
-	for(double &d : diff){
-		ans *= coef * exp( -(d*d) / (2*sigma*sigma));
-	}
-	*/
+	
+//	double ans = 1.0;
+//	double sigma = 300;
+//	double coef = 1.0 / (sqrt(2*sigma*sigma));
+//	for(double &d : diff){
+//		ans *= coef * exp( -(d*d) / (2*sigma*sigma));
+//	}
+
 	double ans = 1.0;
 	for(double &d : diff){
 		ans /= (1 + fabs(d));
 	}
 
 	return ans;
-}
+}*/
 
-double ParticleFilter::likelihood(Observation *past, Observation *last, Action *past_a, Action *last_a)
+/*double ParticleFilter::likelihood(Observation *past, Observation *last, Action *past_a, Action *last_a)
 {
-/*	double diff[4] = {	past->log_lf - last->log_lf,
-				past->log_ls - last->log_ls,
-				past->log_rs - last->log_rs,
-				past->log_rf - last->log_rf };*/
+//	double diff[4] = {	past->log_lf - last->log_lf,
+//				past->log_ls - last->log_ls,
+//				past->log_rs - last->log_rs,
+//				past->log_rf - last->log_rf };
 
 	double diff[4] = {	(double)past->lf - (double)last->lf,
 				(double)past->ls - (double)last->ls,
@@ -209,7 +209,7 @@ double ParticleFilter::likelihood(Observation *past, Observation *last, Action *
 	ans /= (1 + 0.2*fabs(past_a->angular_z - last_a->angular_z));
 
 	return ans;
-}
+}*/
 
 double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
@@ -221,19 +221,18 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	MatrixXd mlast(3, 4);
 	MatrixXd mm(3,1);
 	MatrixXd ms(3,1);*/
-	MatrixXd mpast(2, 4);
-	MatrixXd mlast(2, 4);
+	MatrixXd mpast(2, 10);
+	MatrixXd mlast(2, 10);
 	MatrixXd mm(2,1);
 	MatrixXd ms(2,1);
 	//cout << "size: " << past->ct_linear_x.size() << endl;
 	//cout << "size: " << last->ct_linear_x.size() << endl;
-	//cout << "------debug------" << endl;
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 10; i++){
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
 		//mpast(2, i) = past->ct_theta[i];
 	}
-	for(int i = 0; i < 4; i++){
+	for(int i = 0; i < 10; i++){
 		mlast(0, i) = last->ct_linear_x[i];
 		mlast(1, i) = last->ct_linear_y[i];
 		//mlast(2, i) = last->ct_theta[i];
@@ -345,7 +344,7 @@ void ParticleFilter::motionUpdate(Episodes *ep)
 }
 
 void ParticleFilter::lastobscoordinatetransformation(Observation *last){
-	double ct_x[4], ct_y[4], ct_theta[4];
+/*	double ct_x[4], ct_y[4], ct_theta[4];
 	constexpr double slf = sin(-3 * 3.141592 / 180.0);
 	constexpr double sls = sin(-45 * 3.141592 / 180.0);
 	constexpr double srs = sin(45 * 3.141592 / 180.0);
@@ -373,6 +372,57 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 		last->ct_theta.push_back(ct_theta[i]);
+	}*/
+	double ct_x[10], ct_y[10], ct_theta[10];
+	constexpr double cr1 = cos(3 * 3.141592 / 180.0);
+	constexpr double cr2 = cos(15 * 3.141592 / 180.0);
+  constexpr double cr3 = cos(30 * 3.141592 / 180.0);
+  constexpr double cr4 = cos(45 * 3.141592 / 180.0);
+  constexpr double cr5 = cos(60 * 3.141592 / 180.0);
+  constexpr double sr1 = sin(3 * 3.141592 / 180.0);
+  constexpr double sr2 = sin(15 * 3.141592 / 180.0);
+  constexpr double sr3 = sin(30 * 3.141592 / 180.0);
+  constexpr double sr4 = sin(45 * 3.141592 / 180.0);
+  constexpr double sr5 = sin(60 * 3.141592 / 180.0);
+  constexpr double cl1 = cos(-3 * 3.141592 / 180.0);
+  constexpr double cl2 = cos(-15 * 3.141592 / 180.0);
+  constexpr double cl3 = cos(-30 * 3.141592 / 180.0);
+  constexpr double cl4 = cos(-45 * 3.141592 / 180.0);
+  constexpr double cl5 = cos(-60 * 3.141592 / 180.0);
+  constexpr double sl1 = sin(-3 * 3.141592 / 180.0);
+  constexpr double sl2 = sin(-15 * 3.141592 / 180.0);
+  constexpr double sl3 = sin(-30 * 3.141592 / 180.0);
+  constexpr double sl4 = sin(-45 * 3.141592 / 180.0);
+  constexpr double sl5 = sin(-60 * 3.141592 / 180.0);
+
+	ct_x[0] = last->l1 * sl1;
+	ct_y[0] = last->l1 * cl1;
+	ct_x[1] = last->l2 * sl2;
+	ct_y[1] = last->l2 * cl2;
+	ct_x[2] = last->l3 * sl3;
+	ct_y[2] = last->l3 * cl3;
+	ct_x[3] = last->l4 * sl4;
+	ct_y[3] = last->l4 * cl4;
+	ct_x[4] = last->l5 * sl5;
+	ct_y[4] = last->l5 * cl5;
+	ct_x[5] = last->r1 * sr1;
+	ct_y[5] = last->r1 * cr1;
+	ct_x[6] = last->r2 * sr2;
+	ct_y[6] = last->r2 * cr2;
+	ct_x[7] = last->r3 * sr3;
+	ct_y[7] = last->r3 * cr3;
+	ct_x[8] = last->r4 * sr4;
+	ct_y[8] = last->r4 * cr4;
+	ct_x[9] = last->r5 * sr5;
+	ct_y[9] = last->r5 * cr5;
+
+	last->centroid_x = 0;
+	last->centroid_y = 0;
+	last->centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3] + ct_x[4] + ct_x[5] + ct_x[6] + ct_x[7] + ct_x[8] + ct_x[9]) / 10.0;
+	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3] + ct_y[4] + ct_y[5] + ct_y[6] + ct_y[7] + ct_y[8] + ct_y[9]) / 10.0;
+	for(int i = 0; i < 10; i++){
+		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
+		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 	}
 }
 

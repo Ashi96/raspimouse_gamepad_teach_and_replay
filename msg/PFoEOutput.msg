@@ -1,7 +1,13 @@
-int16 right_forward
-int16 right_side
-int16 left_side
-int16 left_forward
+int16 right_1
+int16 right_2
+int16 right_3
+int16 right_4
+int16 right_5
+int16 left_1
+int16 left_2
+int16 left_3
+int16 left_4
+int16 left_5
 float32 linear_x
 float32 angular_z
 float32 eta
