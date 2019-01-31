@@ -20,7 +20,7 @@
 using namespace ros;
 
 Episodes ep;
-ParticleFilter pf(100, &ep);
+ParticleFilter pf(500, &ep);
 
 Observation sensor_values;
 
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
 	motor_on.call(t);
 
 	geometry_msgs::Twist msg;
-	pf.init();
+//	pf.init();
 	Rate loop_rate(10);
 	Action act = {0.0, 0.0};
 	while (ok())
