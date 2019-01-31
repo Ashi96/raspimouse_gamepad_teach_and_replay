@@ -74,7 +74,8 @@ class Logger():
 	l2 = int((math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
 	l3 = int((math.pi*30.0/180 - s.angle_min)/s.angle_increment); 
 	l4 = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
-	l5 = int((math.pi*60.0/180 - s.angle_min)/s.angle_increment); 
+	l5 = int((math.pi*60.0/180 - s.angle_min)/s.angle_increment);
+	print(r4) 
 
       	e.left_1 = 500.0 if math.isnan(s.ranges[l1]) else s.ranges[l1]*1000;
       	e.left_2 = 500.0 if math.isnan(s.ranges[l2]) else s.ranges[l2]*1000;
@@ -82,10 +83,10 @@ class Logger():
       	e.left_4 = 500.0 if math.isnan(s.ranges[l4]) else s.ranges[l4]*1000;
       	e.left_5 = 500.0 if math.isnan(s.ranges[l5]) else s.ranges[l5]*1000;
       	e.right_1 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r1]*1000;
-      	e.right_2 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r2]*1000;
-      	e.right_3 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r3]*1000;
-      	e.right_4 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r4]*1000;
-      	e.right_5 = 500.0 if math.isnan(s.ranges[r1]) else s.ranges[r5]*1000;
+      	e.right_2 = 500.0 if math.isnan(s.ranges[r2]) else s.ranges[r2]*1000;
+      	e.right_3 = 500.0 if math.isnan(s.ranges[r3]) else s.ranges[r3]*1000;
+      	e.right_4 = 500.0 if math.isnan(s.ranges[r4]) else s.ranges[r4]*1000;
+      	e.right_5 = 500.0 if math.isnan(s.ranges[r5]) else s.ranges[r5]*1000;
       	e.linear_x = a.linear.x
       	e.angular_z = a.angular.z
 
