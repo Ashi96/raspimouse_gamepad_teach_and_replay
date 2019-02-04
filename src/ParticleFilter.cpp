@@ -1,6 +1,7 @@
 #include <vector>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/SVD>
+#include <cmath>
 #include "Particle.h"
 #include "ParticleFilter.h"
 #include "Observation.h"
@@ -265,6 +266,7 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	cout << "--------------------" << endl;*/
 	double ans;
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	return ans;
 }
