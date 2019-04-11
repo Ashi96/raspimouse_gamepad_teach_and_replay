@@ -20,7 +20,7 @@
 using namespace ros;
 
 Episodes ep;
-ParticleFilter pf(500, &ep);
+ParticleFilter pf(100, &ep);
 
 Observation sensor_values;
 
@@ -100,7 +100,6 @@ void readEpisodes(string file)
 	for (auto i : view)
 	{
 		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
-
 		//Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
 		Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5);
 
@@ -159,6 +158,7 @@ int main(int argc, char **argv)
 			readEpisodes(bagfile);
 			bag_read = true;
 			pf.init();
+			bag_read = true;
 			spinOnce();
 
 			ep.coordinatetransformation();

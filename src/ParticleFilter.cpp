@@ -22,6 +22,8 @@ ParticleFilter::ParticleFilter(int num, Episodes *ep)
 
 void ParticleFilter::init(void)
 {
+	cout << "particles.size : "<< particles.size() << endl;
+	cout << episodes->data.size() << endl;
 	double w = 1.0/particles.size();
 	for(auto &p : particles){
 		p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
@@ -109,7 +111,7 @@ Action ParticleFilter::average(Episodes *ep)
 Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep, raspimouse_gamepad_teach_and_replay::PFoEOutput *out)
 {
 	out->eta = 0.0;
-	
+
 	lastobscoordinatetransformation(obs);
 
 //	cout << "size: " << obs->ct_linear_x.size() << endl;
@@ -157,8 +159,8 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 //	cout << "avg" << endl;
 //	return average(ep);
 }
-/*
-double ParticleFilter::likelihood(Observation *past, Observation *last)
+
+/*double ParticleFilter::likelihood(Observation *past, Observation *last)
 {
 	//double diff[4] = {	past->log_lf - last->log_lf,
 	//			past->log_ls - last->log_ls,
@@ -226,8 +228,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	MatrixXd mlast(2, 10);
 	MatrixXd mm(2,1);
 	MatrixXd ms(2,1);
-	//cout << "size: " << past->ct_linear_x.size() << endl;
-	//cout << "size: " << last->ct_linear_x.size() << endl;
+
+
 	for(int i = 0; i < 10; i++){
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
@@ -238,8 +240,7 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 		mlast(1, i) = last->ct_linear_y[i];
 		//mlast(2, i) = last->ct_theta[i];
 	}
-	//cout << "mpast" << mpast << endl;
-	//cout << "mlast" << mlast << endl;
+
 	w = mpast * mlast.transpose();
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
@@ -256,6 +257,7 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	ms(0, 0) = last->centroid_x;
 	ms(1, 0) = 0.0;
 	ms(2, 0) = last->centroid_y;*/
+
 	mm(0, 0) = past->centroid_x;
 	mm(1, 0) = past->centroid_y;
 	ms(0, 0) = last->centroid_x;
@@ -264,10 +266,27 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 /*	cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
+	/*
+	double cf, cfl1, cfl2, cfl3, cfl4, cfl5, cfr1, cfr2, cfr3, cfr4, cfr5;
+	cfl1 = (past->l1 - last->l1) * (past->l1 - last->l1);
+	cfl2 = (past->l2 - last->l2) * (past->l2 - last->l2);
+	cfl3 = (past->l3 - last->l3) * (past->l3 - last->l3);
+	cfl4 = (past->l4 - last->l4) * (past->l4 - last->l4);
+	cfl5 = (past->l5 - last->l5) * (past->l5 - last->l5);
+	cfr1 = (past->r1 - last->r1) * (past->r1 - last->r1);
+	cfr2 = (past->r2 - last->r2) * (past->r2 - last->r2);
+	cfr3 = (past->r3 - last->r3) * (past->r3 - last->r3);
+	cfr4 = (past->r4 - last->r4) * (past->r4 - last->r4);
+	cfr5 = (past->r5 - last->r5) * (past->r5 - last->r5);
+	cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5) / 10;*/
+	//double cf = 1;
+	//cout << "past->l1:" << past->l1 << endl;
+	//cout << "last->l1:" << last->l1 << endl;
+
 	double ans;
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
-	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	return ans;
 }
 

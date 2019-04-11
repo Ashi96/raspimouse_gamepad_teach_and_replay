@@ -32,6 +32,9 @@ void Episodes::coordinatetransformation(void)
   constexpr double crs = cos(45 * 3.141592 / 180.0);
   constexpr double crf = cos(3 * 3.141592 / 180.0);*/
 
+  //constexpr double urg_deg[] = {3, 15, 30, 45, 60};
+  //constexpr cr[5], sr[5], cl[5], sl[5];
+
   constexpr double cr1 = cos(3 * 3.141592 / 180.0);
   constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(30 * 3.141592 / 180.0);
