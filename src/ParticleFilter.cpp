@@ -245,7 +245,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
 	u = svd.matrixU();
-	v = svd.matrixV().transpose();
+	v = svd.matrixV();
+	//v = svd.matrixV().transpose();
 	R1 = u * v;
 	R = R1.transpose();
 	/*cout << "--------------------" << endl;
@@ -266,7 +267,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 /*	cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
-	/*
+
+/*	
 	double cf, cfl1, cfl2, cfl3, cfl4, cfl5, cfr1, cfr2, cfr3, cfr4, cfr5;
 	cfl1 = (past->l1 - last->l1) * (past->l1 - last->l1);
 	cfl2 = (past->l2 - last->l2) * (past->l2 - last->l2);
@@ -278,15 +280,17 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	cfr3 = (past->r3 - last->r3) * (past->r3 - last->r3);
 	cfr4 = (past->r4 - last->r4) * (past->r4 - last->r4);
 	cfr5 = (past->r5 - last->r5) * (past->r5 - last->r5);
-	cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5) / 10;*/
+	cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5) / 10;
 	//double cf = 1;
-	//cout << "past->l1:" << past->l1 << endl;
-	//cout << "last->l1:" << last->l1 << endl;
+	cout << "past->l1:" << past->l1 << endl;
+	cout << "last->l1:" << last->l1 << endl;
+	cout << "cfl1:" << cfl1 << endl;
+*/
 
 	double ans;
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
-	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592)) * 1.0 / (1.0 + fabs(cf));
 	return ans;
 }
 
@@ -416,7 +420,7 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
   constexpr double sl4 = sin(-45 * 3.141592 / 180.0);
   constexpr double sl5 = sin(-60 * 3.141592 / 180.0);
 
-	ct_x[0] = last->l1 * sl1;
+/*	ct_x[0] = last->l1 * sl1;
 	ct_y[0] = last->l1 * cl1;
 	ct_x[1] = last->l2 * sl2;
 	ct_y[1] = last->l2 * cl2;
@@ -435,7 +439,28 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	ct_x[8] = last->r4 * sr4;
 	ct_y[8] = last->r4 * cr4;
 	ct_x[9] = last->r5 * sr5;
-	ct_y[9] = last->r5 * cr5;
+	ct_y[9] = last->r5 * cr5;*/
+
+	ct_x[0] = last->log_l1 * sl1;
+	ct_y[0] = last->log_l1 * cl1;
+	ct_x[1] = last->log_l2 * sl2;
+	ct_y[1] = last->log_l2 * cl2;
+	ct_x[2] = last->log_l3 * sl3;
+	ct_y[2] = last->log_l3 * cl3;
+	ct_x[3] = last->log_l4 * sl4;
+	ct_y[3] = last->log_l4 * cl4;
+	ct_x[4] = last->log_l5 * sl5;
+	ct_y[4] = last->log_l5 * cl5;
+	ct_x[5] = last->log_r1 * sr1;
+	ct_y[5] = last->log_r1 * cr1;
+	ct_x[6] = last->log_r2 * sr2;
+	ct_y[6] = last->log_r2 * cr2;
+	ct_x[7] = last->log_r3 * sr3;
+	ct_y[7] = last->log_r3 * cr3;
+	ct_x[8] = last->log_r4 * sr4;
+	ct_y[8] = last->log_r4 * cr4;
+	ct_x[9] = last->log_r5 * sr5;
+	ct_y[9] = last->log_r5 * cr5;
 
 	last->centroid_x = 0;
 	last->centroid_y = 0;

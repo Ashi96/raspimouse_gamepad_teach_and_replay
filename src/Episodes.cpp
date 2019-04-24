@@ -73,7 +73,7 @@ void Episodes::coordinatetransformation(void)
 		ct_y[3] = e.observation.rf * crf;
 		ct_theta[3] = 3.0;*/
 
-		ct_x[0] = e.observation.l1 * sl1;
+/*		ct_x[0] = e.observation.l1 * sl1;
 		ct_y[0] = e.observation.l1 * cl1;
 		ct_x[1] = e.observation.l2 * sl2;
 		ct_y[1] = e.observation.l2 * cl2;
@@ -92,8 +92,29 @@ void Episodes::coordinatetransformation(void)
 		ct_x[8] = e.observation.r4 * sr4;
 		ct_y[8] = e.observation.r4 * cr4;
 		ct_x[9] = e.observation.r5 * sr5;
-		ct_y[9] = e.observation.r5 * cr5;
+		ct_y[9] = e.observation.r5 * cr5;*/
 		
+		ct_x[0] = e.observation.log_l1 * sl1;
+		ct_y[0] = e.observation.log_l1 * cl1;
+		ct_x[1] = e.observation.log_l2 * sl2;
+		ct_y[1] = e.observation.log_l2 * cl2;
+		ct_x[2] = e.observation.log_l3 * sl3;
+		ct_y[2] = e.observation.log_l3 * cl3;
+		ct_x[3] = e.observation.log_l4 * sl4;
+		ct_y[3] = e.observation.log_l4 * cl4;
+		ct_x[4] = e.observation.log_l5 * sl5;
+		ct_y[4] = e.observation.log_l5 * cl5;
+		ct_x[5] = e.observation.log_r1 * sr1;
+		ct_y[5] = e.observation.log_r1 * cr1;
+		ct_x[6] = e.observation.log_r2 * sr2;
+		ct_y[6] = e.observation.log_r2 * cr2;
+		ct_x[7] = e.observation.log_r3 * sr3;
+		ct_y[7] = e.observation.log_r3 * cr3;
+		ct_x[8] = e.observation.log_r4 * sr4;
+		ct_y[8] = e.observation.log_r4 * cr4;
+		ct_x[9] = e.observation.log_r5 * sr5;
+		ct_y[9] = e.observation.log_r5 * cr5;
+
 		e.observation.centroid_x = 0;
 		e.observation.centroid_y = 0;
 		/*e.observation.centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3]) / 4.0; //4.0 <- number of sensors

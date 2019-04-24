@@ -45,7 +45,7 @@ void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int l
 	r4 = right_4 > 0 ? right_4 : 1;
 	r5 = right_5 > 0 ? right_5 : 1;
 
-	log_l1 = log10((double)l1);
+/*	log_l1 = log10((double)l1);
 	log_l2 = log10((double)l2);
 	log_l3 = log10((double)l3);
 	log_l4 = log10((double)l4);
@@ -54,5 +54,15 @@ void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int l
 	log_r2 = log10((double)r2);
 	log_r3 = log10((double)r3);
 	log_r4 = log10((double)r4);
-	log_r5 = log10((double)r5);
+	log_r5 = log10((double)r5);*/
+	log_l1 = log((double)l1);
+	log_l2 = log((double)l2);
+	log_l3 = log((double)l3);
+	log_l4 = log((double)l4);
+	log_l5 = log((double)l5);
+	log_r1 = log((double)r1);
+	log_r2 = log((double)r2);
+	log_r3 = log((double)r3);
+	log_r4 = log((double)r4);
+	log_r5 = log((double)r5);
 }
