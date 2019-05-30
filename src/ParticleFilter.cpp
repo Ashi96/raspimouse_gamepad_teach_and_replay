@@ -245,8 +245,8 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
 	u = svd.matrixU();
-	v = svd.matrixV();
-	//v = svd.matrixV().transpose();
+	//v = svd.matrixV();
+	v = svd.matrixV().transpose();
 	R1 = u * v;
 	R = R1.transpose();
 	/*cout << "--------------------" << endl;
@@ -268,29 +268,29 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
 
-/*	
-	double cf, cfl1, cfl2, cfl3, cfl4, cfl5, cfr1, cfr2, cfr3, cfr4, cfr5;
-	cfl1 = (past->l1 - last->l1) * (past->l1 - last->l1);
-	cfl2 = (past->l2 - last->l2) * (past->l2 - last->l2);
-	cfl3 = (past->l3 - last->l3) * (past->l3 - last->l3);
-	cfl4 = (past->l4 - last->l4) * (past->l4 - last->l4);
-	cfl5 = (past->l5 - last->l5) * (past->l5 - last->l5);
-	cfr1 = (past->r1 - last->r1) * (past->r1 - last->r1);
-	cfr2 = (past->r2 - last->r2) * (past->r2 - last->r2);
-	cfr3 = (past->r3 - last->r3) * (past->r3 - last->r3);
-	cfr4 = (past->r4 - last->r4) * (past->r4 - last->r4);
-	cfr5 = (past->r5 - last->r5) * (past->r5 - last->r5);
+
+	double cf,cfl1, cfl2, cfl3, cfl4, cfl5, cfr1, cfr2, cfr3, cfr4, cfr5;
+	cfl1 = (past->log_l1 - last->log_l1) * (past->log_l1 - last->log_l1);
+	cfl2 = (past->log_l2 - last->log_l2) * (past->log_l2 - last->log_l2);
+	cfl3 = (past->log_l3 - last->log_l3) * (past->log_l3 - last->log_l3);
+	cfl4 = (past->log_l4 - last->log_l4) * (past->log_l4 - last->log_l4);
+	cfl5 = (past->log_l5 - last->log_l5) * (past->log_l5 - last->log_l5);
+	cfr1 = (past->log_r1 - last->log_r1) * (past->log_r1 - last->log_r1);
+	cfr2 = (past->log_r2 - last->log_r2) * (past->log_r2 - last->log_r2);
+	cfr3 = (past->log_r3 - last->log_r3) * (past->log_r3 - last->log_r3);
+	cfr4 = (past->log_r4 - last->log_r4) * (past->log_r4 - last->log_r4);
+	cfr5 = (past->log_r5 - last->log_r5) * (past->log_r5 - last->log_r5);
 	cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5) / 10;
+	
 	//double cf = 1;
-	cout << "past->l1:" << past->l1 << endl;
-	cout << "last->l1:" << last->l1 << endl;
-	cout << "cfl1:" << cfl1 << endl;
-*/
+	/*cout << "past->log_l1:" << past->log_l1 << endl;
+	cout << "last->log_l1:" << last->log_l1 << endl;
+	cout << "cfl1:" << cfl1 << endl;*/
 
 	double ans;
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
-	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
-	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592)) * 1.0 / (1.0 + fabs(cf));
+	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
+	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592)) * 1.0 / (1.0 + cf);
 	return ans;
 }
 
