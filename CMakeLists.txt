@@ -55,6 +55,7 @@ add_message_files(
   FILES
   Event.msg
   PFoEOutput.msg
+  PFoEOutput_urg.msg
 )
 
 ## Generate services in the 'srv' folder

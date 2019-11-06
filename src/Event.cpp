@@ -26,11 +26,21 @@ string Event::str(void)
 		+ to_string(observation.l3) + '\t' 
 		+ to_string(observation.l4) + '\t' 
 		+ to_string(observation.l5) + '\t' 
+		+ to_string(observation.l6) + '\t' 
+		+ to_string(observation.l7) + '\t' 
+		+ to_string(observation.l8) + '\t' 
+		+ to_string(observation.l9) + '\t' 
+		+ to_string(observation.l10) + '\t' 
 		+ to_string(observation.r1) + '\t' 
 		+ to_string(observation.r2) + '\t' 
 		+ to_string(observation.r3) + '\t' 
 		+ to_string(observation.r4) + '\t' 
-		+ to_string(observation.r5);
+		+ to_string(observation.r5) + '\t' 
+		+ to_string(observation.r6) + '\t' 
+		+ to_string(observation.r7) + '\t' 
+		+ to_string(observation.r8) + '\t' 
+		+ to_string(observation.r9) + '\t' 
+		+ to_string(observation.r10);
 
 	string t = to_string(time.toSec());
 
