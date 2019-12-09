@@ -8,6 +8,7 @@
 #include <rosbag/bag.h>
 #include <rosbag/view.h>
 #include <ros/package.h>
+#include <vector>
 #include "std_srvs/Trigger.h"
 #include "geometry_msgs/Twist.h"
 #include "raspimouse_ros_2/LightSensorValues.h"
@@ -23,6 +24,8 @@ Episodes ep;
 ParticleFilter pf(1000, &ep);
 
 Observation sensor_values;
+std::vector<float> left_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+std::vector<float> right_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
 
 NodeHandle *np;
 int sum_forward = 0;
@@ -72,7 +75,7 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 	double r4v = isnan(msg->ranges[r4]) ? 500.0 : msg->ranges[r4] * 1000;
 	double r5v = isnan(msg->ranges[r5]) ? 500.0 : msg->ranges[r5] * 1000;*/
 
-	int l1 = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
+	/*int l1 = (pi * 3.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int l2 = (pi * 15.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int l3 = (pi * 20.0 / 180 - msg->angle_min) / msg->angle_increment;
 	int l4 = (pi * 30.0 / 180 - msg->angle_min) / msg->angle_increment;
@@ -112,10 +115,24 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 	double r7v = isnan(msg->ranges[r7]) ? 4100.0 : msg->ranges[r7] * 1000;
 	double r8v = isnan(msg->ranges[r8]) ? 4100.0 : msg->ranges[r8] * 1000;
 	double r9v = isnan(msg->ranges[r9]) ? 4100.0 : msg->ranges[r9] * 1000;
-	double r10v = isnan(msg->ranges[r10]) ? 4100.0 : msg->ranges[r10] * 1000;
+	double r10v = isnan(msg->ranges[r10]) ? 4100.0 : msg->ranges[r10] * 1000;*/
+
+	std::vector<int> urg_sensor_left;
+	std::vector<int> urg_sensor_right;
+	for(unsigned int i = 0; i < left_sensor_value.size(); i++){
+		int l = (pi * left_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
+		double lv = isnan(msg->ranges[l]) ? 4100.0 : msg->ranges[l] * 1000;
+		urg_sensor_left.push_back(lv);
+	}
+	for(unsigned int i = 0; i < right_sensor_value.size(); i++){
+		int r = (pi * right_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
+		double rv = isnan(msg->ranges[r]) ? 4100.0 : msg->ranges[r] * 1000;
+		urg_sensor_right.push_back(rv);
+	}
 
 	//sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, r1v, r2v, r3v, r4v, r5v);
-	sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, l6v, l7v, l8v, l9v, l10v, r1v, r2v, r3v, r4v, r5v, r6v, r7v, r8v, r9v, r10v);
+	//sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, l6v, l7v, l8v, l9v, l10v, r1v, r2v, r3v, r4v, r5v, r6v, r7v, r8v, r9v, r10v);
+	sensor_values.setValues(urg_sensor_left, urg_sensor_right);
 }
 
 void on_shutdown(int sig)
@@ -144,7 +161,31 @@ void readEpisodes(string file)
 	{
 		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
 		//Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
-		Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->left_6, s->left_7, s->left_8, s->left_9, s->left_10, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5, s->right_6, s->right_7, s->right_8, s->right_9, s->right_10);
+		//Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->left_6, s->left_7, s->left_8, s->left_9, s->left_10, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5, s->right_6, s->right_7, s->right_8, s->right_9, s->right_10);
+		std::vector<int> left_sensor,right_sensor;
+		left_sensor.reserve(left_sensor_value.size());
+		right_sensor.reserve(right_sensor_value.size());
+		left_sensor[0] = s->left_1;
+		left_sensor[1] = s->left_2;
+		left_sensor[2] = s->left_3;
+		left_sensor[3] = s->left_4;
+		left_sensor[4] = s->left_5;
+		left_sensor[5] = s->left_6;
+		left_sensor[6] = s->left_7;
+		left_sensor[7] = s->left_8;
+		left_sensor[8] = s->left_9;
+		left_sensor[9] = s->left_10;
+		right_sensor[0] = s->right_1;
+		right_sensor[1] = s->right_2;
+		right_sensor[2] = s->right_3;
+		right_sensor[3] = s->right_4;
+		right_sensor[4] = s->right_5;
+		right_sensor[5] = s->right_6;
+		right_sensor[6] = s->right_7;
+		right_sensor[7] = s->right_8;
+		right_sensor[8] = s->right_9;
+		right_sensor[9] = s->right_10;
+		Observation obs(left_sensor, right_sensor);
 
 		Action a = {s->linear_x, s->angular_z};
 		Event e(obs, a, 0.0);
@@ -221,7 +262,7 @@ int main(int argc, char **argv)
 		out.left_side = sensor_values.ls;
 		out.right_forward = sensor_values.rf;
 		out.right_side = sensor_values.rs;*/
-		out.left_1 = sensor_values.l1;
+		/*out.left_1 = sensor_values.l1;
 		out.left_2 = sensor_values.l2;
 		out.left_3 = sensor_values.l3;
 		out.left_4 = sensor_values.l4;
@@ -240,7 +281,27 @@ int main(int argc, char **argv)
 		out.right_7 = sensor_values.r7;
 		out.right_8 = sensor_values.r8;
 		out.right_9 = sensor_values.r9;
-		out.right_10 = sensor_values.r10;
+		out.right_10 = sensor_values.r10;*/
+		out.left_1 = sensor_values.l[0];
+		out.left_2 = sensor_values.l[1];
+		out.left_3 = sensor_values.l[2];
+		out.left_4 = sensor_values.l[3];
+		out.left_5 = sensor_values.l[4];
+		out.left_6 = sensor_values.l[5];
+		out.left_7 = sensor_values.l[6];
+		out.left_8 = sensor_values.l[7];
+		out.left_9 = sensor_values.l[8];
+		out.left_10 = sensor_values.l[9];
+		out.right_1 = sensor_values.r[0];
+		out.right_2 = sensor_values.r[1];
+		out.right_3 = sensor_values.r[2];
+		out.right_4 = sensor_values.r[3];
+		out.right_5 = sensor_values.r[4];
+		out.right_6 = sensor_values.r[5];
+		out.right_7 = sensor_values.r[6];
+		out.right_8 = sensor_values.r[7];
+		out.right_9 = sensor_values.r[8];
+		out.right_10 = sensor_values.r[9];
 
 		cmdvel.publish(msg);
 		pfoe_out.publish(out);

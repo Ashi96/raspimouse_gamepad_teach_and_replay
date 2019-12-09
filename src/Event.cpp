@@ -21,7 +21,7 @@ string Event::str(void)
 		+ to_string(observation.ls) + '\t' 
 		+ to_string(observation.rs) + '\t' 
 		+ to_string(observation.rf);*/
-	string s = to_string(observation.l1) + '\t'
+	/*string s = to_string(observation.l1) + '\t'
 		+ to_string(observation.l2) + '\t' 
 		+ to_string(observation.l3) + '\t' 
 		+ to_string(observation.l4) + '\t' 
@@ -40,7 +40,19 @@ string Event::str(void)
 		+ to_string(observation.r7) + '\t' 
 		+ to_string(observation.r8) + '\t' 
 		+ to_string(observation.r9) + '\t' 
-		+ to_string(observation.r10);
+		+ to_string(observation.r10);*/
+	
+	string le = "";
+	for(int i = 0; i < observation.l.size(); i++){
+		le += to_string(observation.l[i]) + '\t';
+	}
+	string ri = "";
+	for(int i = 0; i < observation.r.size(); i++){
+		le += to_string(observation.r[i]);
+		if (!(i < (observation.l.size() - 1))) le += '\t';
+	}
+	
+	string s = le + ri;
 
 	string t = to_string(time.toSec());
 

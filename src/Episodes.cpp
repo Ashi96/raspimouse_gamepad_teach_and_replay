@@ -22,7 +22,9 @@ void Episodes::append(Event e)
 void Episodes::coordinatetransformation(void)
 {
 	//double ct_x[4], ct_y[4], ct_theta[4];
-	double ct_x[20], ct_y[20], ct_theta[20];
+
+	//double ct_x[20], ct_y[20], ct_theta[20];
+	
 	/*constexpr double slf = sin(-3 * 3.141592 / 180.0);
   constexpr double sls = sin(-45 * 3.141592 / 180.0);
   constexpr double srs = sin(45 * 3.141592 / 180.0);
@@ -35,7 +37,23 @@ void Episodes::coordinatetransformation(void)
   //constexpr double urg_deg[] = {3, 15, 30, 45, 60};
   //constexpr cr[5], sr[5], cl[5], sl[5];
 
-  constexpr double cr1 = cos(3 * 3.141592 / 180.0);
+	vector<double> ct_x, ct_y, ct_theta;
+	vector<double> cr, sr, cl, sl;
+	vector<float> right_angle = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	vector<float> left_angle = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+
+	for(int i = 0; i < right_angle.size(); i++){
+		double crr = cos(right_angle[i] * 3.141592 / 180.0);
+		double srr = sin(right_angle[i] * 3.141592 / 180.0);
+		double cll = cos(-left_angle[i] * 3.141592 / 180.0);
+		double sll = sin(-left_angle[i] * 3.141592 / 180.0);
+		cr.push_back(crr);
+		sr.push_back(srr);
+		cl.push_back(cll);
+		sl.push_back(sll);
+	}
+
+ /* constexpr double cr1 = cos(3 * 3.141592 / 180.0);
   constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(20 * 3.141592 / 180.0);
   constexpr double cr4 = cos(30 * 3.141592 / 180.0);
@@ -74,7 +92,7 @@ void Episodes::coordinatetransformation(void)
   constexpr double sl7 = sin(-60 * 3.141592 / 180.0);
   constexpr double sl8 = sin(-75 * 3.141592 / 180.0);
   constexpr double sl9 = sin(-90 * 3.141592 / 180.0);
-  constexpr double sl10 = sin(-120 * 3.141592 / 180.0);
+  constexpr double sl10 = sin(-120 * 3.141592 / 180.0);*/
 
 	for (auto &e : data)
 	{
@@ -113,8 +131,17 @@ void Episodes::coordinatetransformation(void)
 		ct_y[8] = e.observation.r4 * cr4;
 		ct_x[9] = e.observation.r5 * sr5;
 		ct_y[9] = e.observation.r5 * cr5;*/
-		
-		ct_x[0] = e.observation.log_l1 * sl1;
+
+		for(int i = 0; i < e.observation.log_l.size(); i++){
+			ct_x.push_back(e.observation.log_l[i] * sl[i]);
+			ct_y.push_back(e.observation.log_l[i] * cl[i]);
+		}
+		for(int i = 0; i < e.observation.log_r.size(); i++){
+			ct_x.push_back(e.observation.log_r[i] * sr[i]);
+			ct_y.push_back(e.observation.log_r[i] * cr[i]);
+		}
+
+/*		ct_x[0] = e.observation.log_l1 * sl1;
 		ct_y[0] = e.observation.log_l1 * cl1;
 		ct_x[1] = e.observation.log_l2 * sl2;
 		ct_y[1] = e.observation.log_l2 * cl2;
@@ -153,7 +180,7 @@ void Episodes::coordinatetransformation(void)
 		ct_x[18] = e.observation.log_r9 * sr9;
 		ct_y[18] = e.observation.log_r9 * cr9;
 		ct_x[19] = e.observation.log_r10 * sr10;
-		ct_y[19] = e.observation.log_r10 * cr10;
+		ct_y[19] = e.observation.log_r10 * cr10;*/
 
 		e.observation.centroid_x = 0;
 		e.observation.centroid_y = 0;
@@ -161,8 +188,10 @@ void Episodes::coordinatetransformation(void)
 		e.observation.centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3]) / 4.0; //4.0 <- number of sensors */
 		//e.observation.centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3] + ct_x[4] + ct_x[5] + ct_x[6] + ct_x[7] + ct_x[8] + ct_x[9]) / 10.0; //10.0 <- number of sensors
 		//e.observation.centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3] + ct_y[4] + ct_y[5] + ct_y[6] + ct_y[7] + ct_y[8] + ct_y[9]) / 10.0; //10.0 <- number of sensors
+		/*
 		double ct_x_sum = 0;
 		double ct_y_sum = 0;
+		
 		// 20 <- number of sensors
 		for (int i = 0; i < 20; i++)
 		{
@@ -170,7 +199,10 @@ void Episodes::coordinatetransformation(void)
 			ct_y_sum += ct_y[i];
 		}
 		e.observation.centroid_x = ct_x_sum / 20.0; //20.0 <- number of sensors
-		e.observation.centroid_y = ct_y_sum / 20.0; //20.0 <- number of sensors
+		e.observation.centroid_y = ct_y_sum / 20.0; //20.0 <- number of sensors*/
+
+		e.observation.centroid_x = accumulate(ct_x.begin(), ct_x.end(), 0.0) / ct_x.size();
+		e.observation.centroid_y = accumulate(ct_y.begin(), ct_y.end(), 0.0) / ct_y.size();
 
 /*		for (int i = 0; i < 4; i++)
 		{
@@ -179,7 +211,7 @@ void Episodes::coordinatetransformation(void)
 			e.observation.ct_theta.push_back(ct_theta[i]);
 		}*/
 		// 20 <- number of sensors
-		for (int i = 0; i < 20; i++)
+		for (int i = 0; i < ct_x.size(); i++)
 		{
 			e.observation.ct_linear_x.push_back(ct_x[i] - e.observation.centroid_x);
 			e.observation.ct_linear_y.push_back(ct_y[i] - e.observation.centroid_y);

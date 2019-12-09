@@ -270,7 +270,7 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
 
-
+/*
 	double cf,cfl1, cfl2, cfl3, cfl4, cfl5, cfl6, cfl7, cfl8, cfl9, cfl10, cfr1, cfr2, cfr3, cfr4, cfr5, cfr6, cfr7, cfr8, cfr9, cfr10;
 	cfl1 = (past->log_l1 - last->log_l1) * (past->log_l1 - last->log_l1);
 	cfl2 = (past->log_l2 - last->log_l2) * (past->log_l2 - last->log_l2);
@@ -292,8 +292,19 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	cfr8 = (past->log_r8 - last->log_r8) * (past->log_r8 - last->log_r8);
 	cfr9 = (past->log_r9 - last->log_r9) * (past->log_r9 - last->log_r9);
 	cfr10 = (past->log_r10 - last->log_r10) * (past->log_r10 - last->log_r10);
+*/
+	double cfl = 0;
+	double cfr = 0;
+	for (int i = 0; i < past->log_l.size(); i++){
+		cfl += (past->log_l[i] - last->log_l[i]) * (past->log_l[i] - last->log_l[i]);
+	}
+	for (int i = 0; i < past->log_r.size(); i++){
+		cfr += (past->log_r[i] - last->log_r[i]) * (past->log_r[i] - last->log_r[i]);
+	}
 	//20 <- number of sensors
-	cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfl6 + cfl7 + cfl8 + cfl9 + cfl10 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5 + cfr6 + cfr7 + cfr8 + cfr9 + cfr10) / 20;
+	//cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfl6 + cfl7 + cfl8 + cfl9 + cfl10 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5 + cfr6 + cfr7 + cfr8 + cfr9 + cfr10) / 20;
+	double cf;
+	cf = (cfl + cfr) / (past->log_l.size() + past->log_r.size());
 	
 	//double cf = 1;
 	/*cout << "past->log_l1:" << past->log_l1 << endl;
@@ -411,9 +422,18 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 		last->ct_theta.push_back(ct_theta[i]);
 	}*/
-	double ct_x[20], ct_y[20], ct_theta[20];
-	constexpr double cr1 = cos(3 * 3.141592 / 180.0);
-	constexpr double cr2 = cos(15 * 3.141592 / 180.0);
+std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+int sum_dig_num = left_sensor_dig.size() + right_sensor_dig.size();
+double ct_x[sum_dig_num], ct_y[sum_dig_num], ct_theta[sum_dig_num];
+std::vector<float> cr, sr;
+std::vector<float> cl, sl;
+cr.reserve(right_sensor_dig.size());
+sr.reserve(right_sensor_dig.size());
+cl.reserve(left_sensor_dig.size());
+sl.reserve(left_sensor_dig.size());
+/*constexpr double cr1 = cos(3 * 3.141592 / 180.0);
+constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(20 * 3.141592 / 180.0);
   constexpr double cr4 = cos(30 * 3.141592 / 180.0);
   constexpr double cr5 = cos(40 * 3.141592 / 180.0);
@@ -451,7 +471,23 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
   constexpr double sl7 = sin(-60 * 3.141592 / 180.0);
   constexpr double sl8 = sin(-75 * 3.141592 / 180.0);
   constexpr double sl9 = sin(-90 * 3.141592 / 180.0);
-  constexpr double sl10 = sin(-120 * 3.141592 / 180.0);
+  constexpr double sl10 = sin(-120 * 3.141592 / 180.0);*/
+  for (int i = 0; i < right_sensor_dig.size(); i++){
+	  cr[i] = cos(right_sensor_dig[i] * 3.141592 / 180.0);
+	  sr[i] = sin(right_sensor_dig[i] * 3.141592 / 180.0);
+  }
+  for (int i = 0; i < left_sensor_dig.size(); i++){
+	  cl[i] = cos(-left_sensor_dig[i] * 3.141592 / 180.0);
+	  sl[i] = sin(-left_sensor_dig[i] * 3.141592 / 180.0);
+  }
+  for (int i = 0; i < left_sensor_dig.size(); i++){
+	  ct_x[i] = last->log_l[i] * sl[i];
+	  ct_y[i] = last->log_l[i] * cl[i];
+  }
+  for (int i = left_sensor_dig.size(), j = 0; i < sum_dig_num; i++,j++){
+	  ct_x[i] = last->log_r[j] * sr[j];
+	  ct_y[i] = last->log_r[j] * cr[j];
+  }
 
 /*	ct_x[0] = last->l1 * sl1;
 	ct_y[0] = last->l1 * cl1;
@@ -474,7 +510,7 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	ct_x[9] = last->r5 * sr5;
 	ct_y[9] = last->r5 * cr5;*/
 
-	ct_x[0] = last->log_l1 * sl1;
+/*	ct_x[0] = last->log_l1 * sl1;
 	ct_y[0] = last->log_l1 * cl1;
 	ct_x[1] = last->log_l2 * sl2;
 	ct_y[1] = last->log_l2 * cl2;
@@ -513,7 +549,7 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	ct_x[18] = last->log_r9 * sr9;
 	ct_y[18] = last->log_r9 * cr9;
 	ct_x[19] = last->log_r10 * sr10;
-	ct_y[19] = last->log_r10 * cr10;
+	ct_y[19] = last->log_r10 * cr10;*/
 
 	last->centroid_x = 0;
 	last->centroid_y = 0;
@@ -521,14 +557,14 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 //	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3] + ct_y[4] + ct_y[5] + ct_y[6] + ct_y[7] + ct_y[8] + ct_y[9]) / 10.0;
 	double ct_x_sum = 0;
 	double ct_y_sum = 0;
-	for(int i = 0; i < 20; i++){
+	for(int i = 0; i < sum_dig_num; i++){
 		ct_x_sum += ct_x[i];
 		ct_y_sum += ct_y[i];
 	}
-	last->centroid_x = (ct_x_sum) / 20.0;
-	last->centroid_y = (ct_y_sum) / 20.0;
+	last->centroid_x = (ct_x_sum) / sum_dig_num;
+	last->centroid_y = (ct_y_sum) / sum_dig_num;
 	// 20 <- number of sensors
-	for(int i = 0; i < 20; i++){
+	for(int i = 0; i < sum_dig_num; i++){
 		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 	}

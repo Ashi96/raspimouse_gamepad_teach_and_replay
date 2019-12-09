@@ -14,11 +14,14 @@ Observation::Observation()
 {
 	setValues(left_f,left_s,right_s,right_f);
 }*/
-Observation::Observation(int left_1,int left_2, int left_3, int left_4, int left_5, int left_6, int left_7, int left_8, int left_9, int left_10, int right_1, int right_2, int right_3, int right_4, int right_5, int right_6, int right_7, int right_8, int right_9, int right_10)
+/*Observation::Observation(int left_1,int left_2, int left_3, int left_4, int left_5, int left_6, int left_7, int left_8, int left_9, int left_10, int right_1, int right_2, int right_3, int right_4, int right_5, int right_6, int right_7, int right_8, int right_9, int right_10)
 {
 	setValues(left_1,left_2,left_3,left_4,left_5,left_6,left_7,left_8,left_9,left_10,right_1,right_2,right_3,right_4,right_5,right_6,right_7,right_8,right_9,right_10);
-}
+}*/
 
+Observation::Observation(vector<int> &left, vector<int> &right){
+	setValues(left, right);
+}
 /*void Observation::setValues(int left_f,int left_s, int right_s, int right_f)
 {
 	lf = left_f > 0 ? left_f : 1;
@@ -32,7 +35,7 @@ Observation::Observation(int left_1,int left_2, int left_3, int left_4, int left
 	log_rf = log10((double)rf);
 
 }*/
-void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int left_5, int left_6, int left_7, int left_8, int left_9, int left_10, int right_1, int right_2, int right_3, int right_4, int right_5, int right_6, int right_7, int right_8, int right_9, int right_10)
+/*void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int left_5, int left_6, int left_7, int left_8, int left_9, int left_10, int right_1, int right_2, int right_3, int right_4, int right_5, int right_6, int right_7, int right_8, int right_9, int right_10)
 {
 	l1 = left_1 > 0 ? left_1 : 1;
 	l2 = left_2 > 0 ? left_2 : 1;
@@ -55,7 +58,7 @@ void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int l
 	r9 = right_9 > 0 ? right_9 : 1;
 	r10 = right_10 > 0 ? right_10 : 1;
 
-/*	log_l1 = log10((double)l1);
+	log_l1 = log10((double)l1);
 	log_l2 = log10((double)l2);
 	log_l3 = log10((double)l3);
 	log_l4 = log10((double)l4);
@@ -64,7 +67,7 @@ void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int l
 	log_r2 = log10((double)r2);
 	log_r3 = log10((double)r3);
 	log_r4 = log10((double)r4);
-	log_r5 = log10((double)r5);*/
+	log_r5 = log10((double)r5);
 	log_l1 = log((double)l1);
 	log_l2 = log((double)l2);
 	log_l3 = log((double)l3);
@@ -85,4 +88,25 @@ void Observation::setValues(int left_1,int left_2, int left_3, int left_4, int l
 	log_r8 = log((double)r8);
 	log_r9 = log((double)r9);
 	log_r10 = log((double)r10);
+}*/
+
+void Observation::setValues(vector<int> &left, vector<int> &right)
+{
+	for(unsigned int i = 0; i < left.size(); i++){
+		int n = left[i] > 0 ? left[i] : 1;
+		l.push_back(n);
+	}
+	for(unsigned int i = 0; i < right.size(); i++){
+		int n = right[i] > 0 ? right[i] : 1;
+		r.push_back(n);
+	}
+
+	for(unsigned int i = 0; i < l.size(); i++){
+		int n = log((double)l[i]);
+		log_l.push_back(n);
+	}
+	for(unsigned int i = 0; i < r.size(); i++){
+		int n = log((double)r[i]);
+		log_r.push_back(n);
+	}
 }
