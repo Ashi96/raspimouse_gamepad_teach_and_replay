@@ -216,6 +216,7 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
+	cout << "icplikelihood" << endl;
 	MatrixXd w;
 	//MatrixXd s;
 	MatrixXd u, v;
@@ -231,6 +232,12 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	MatrixXd ms(2,1);
 
 	// 20 <- number of sensors
+	cout << "past->ct_linear_x.size()" << past->ct_linear_x.size() << endl;
+	cout << "past->ct_linear_y.size()" << past->ct_linear_y.size() << endl;
+	cout << "last->ct_linear_x.size()" << last->ct_linear_x.size() << endl;
+	cout << "last->ct_linear_y.size()" << last->ct_linear_y.size() << endl;
+	cout << "past->ct_linear_x[0] :" << past->ct_linear_x[0] << endl;
+	cout << "past->ct_linear_y[0] :" << past->ct_linear_y[0] << endl;
 	for(int i = 0; i < 20; i++){
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
@@ -295,16 +302,21 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 */
 	double cfl = 0;
 	double cfr = 0;
+	cout << "cfl:" << cfl << endl;
+	cout << "cfr:" << cfr << endl;
 	for (int i = 0; i < past->log_l.size(); i++){
 		cfl += (past->log_l[i] - last->log_l[i]) * (past->log_l[i] - last->log_l[i]);
 	}
 	for (int i = 0; i < past->log_r.size(); i++){
 		cfr += (past->log_r[i] - last->log_r[i]) * (past->log_r[i] - last->log_r[i]);
 	}
+	cout << "cfl:" << cfl << endl;
+	cout << "cfr:" << cfr << endl;
 	//20 <- number of sensors
 	//cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfl6 + cfl7 + cfl8 + cfl9 + cfl10 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5 + cfr6 + cfr7 + cfr8 + cfr9 + cfr10) / 20;
 	double cf;
 	cf = (cfl + cfr) / (past->log_l.size() + past->log_r.size());
+	cout << "cf:" << cf << endl;
 	
 	//double cf = 1;
 	/*cout << "past->log_l1:" << past->log_l1 << endl;
@@ -422,16 +434,20 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 		last->ct_theta.push_back(ct_theta[i]);
 	}*/
-std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
-std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
-int sum_dig_num = left_sensor_dig.size() + right_sensor_dig.size();
-double ct_x[sum_dig_num], ct_y[sum_dig_num], ct_theta[sum_dig_num];
-std::vector<float> cr, sr;
-std::vector<float> cl, sl;
-cr.reserve(right_sensor_dig.size());
-sr.reserve(right_sensor_dig.size());
-cl.reserve(left_sensor_dig.size());
-sl.reserve(left_sensor_dig.size());
+	cout << "lastobscoordinatetransformation" << endl;
+	std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	int sum_dig_num = left_sensor_dig.size() + right_sensor_dig.size();
+	double ct_x[sum_dig_num], ct_y[sum_dig_num], ct_theta[sum_dig_num];
+	std::vector<float> cr, sr;
+	std::vector<float> cl, sl;
+	cr.reserve(right_sensor_dig.size());
+	sr.reserve(right_sensor_dig.size());
+	cl.reserve(left_sensor_dig.size());
+	sl.reserve(left_sensor_dig.size());
+	cout << "right_sensor_dig.size() :" << right_sensor_dig.size() << endl;
+	cout << "left_sensor_dig.size() :" << left_sensor_dig.size() << endl;
+	cout << "sum_dig_num :" << sum_dig_num << endl;
 /*constexpr double cr1 = cos(3 * 3.141592 / 180.0);
 constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(20 * 3.141592 / 180.0);
@@ -488,6 +504,8 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
 	  ct_x[i] = last->log_r[j] * sr[j];
 	  ct_y[i] = last->log_r[j] * cr[j];
   }
+  cout << "ct_x[0]:" << ct_x[0] << endl;
+  cout << "ct_y[0]:" << ct_y[0] << endl;
 
 /*	ct_x[0] = last->l1 * sl1;
 	ct_y[0] = last->l1 * cl1;
@@ -568,5 +586,8 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
 		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 	}
+	cout << "last->ct_linear_x[0]:" << last->ct_linear_x[0] << endl;
+	cout << "last->ct_linear_y[0]:" << last->ct_linear_y[0] << endl;
+	cout << "last->ct_linear_x.size():" << last->ct_linear_x.size() << endl;
 }
 

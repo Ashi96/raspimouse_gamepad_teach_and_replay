@@ -100,13 +100,16 @@ void Observation::setValues(vector<int> &left, vector<int> &right)
 		int n = right[i] > 0 ? right[i] : 1;
 		r.push_back(n);
 	}
+	//Idle中も呼び出される
+	//cout << "r:" << r[9] << endl;
 
 	for(unsigned int i = 0; i < l.size(); i++){
-		int n = log((double)l[i]);
+		double n = log((double)l[i]);
 		log_l.push_back(n);
 	}
 	for(unsigned int i = 0; i < r.size(); i++){
-		int n = log((double)r[i]);
+		double n = log((double)r[i]);
 		log_r.push_back(n);
 	}
+	//cout << "log_r:" << log_r[9] << endl;
 }

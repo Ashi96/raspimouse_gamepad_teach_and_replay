@@ -129,7 +129,6 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 		double rv = isnan(msg->ranges[r]) ? 4100.0 : msg->ranges[r] * 1000;
 		urg_sensor_right.push_back(rv);
 	}
-
 	//sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, r1v, r2v, r3v, r4v, r5v);
 	//sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, l6v, l7v, l8v, l9v, l10v, r1v, r2v, r3v, r4v, r5v, r6v, r7v, r8v, r9v, r10v);
 	sensor_values.setValues(urg_sensor_left, urg_sensor_right);
