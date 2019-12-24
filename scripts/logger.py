@@ -98,38 +98,59 @@ class Logger():
 	for angle in right_ang:
 		n = int((-math.pi*angle/180 - s.angle_min)/s.angle_increment)
 		r.append(n)
+	print(r4)
 
-	print(r4) 
-"""
-      	e.left_1 = 4100.0 if math.isnan(s.ranges[l1]) else s.ranges[l1]*1000;
-      	e.left_2 = 4100.0 if math.isnan(s.ranges[l2]) else s.ranges[l2]*1000;
-      	e.left_3 = 4100.0 if math.isnan(s.ranges[l3]) else s.ranges[l3]*1000;
-      	e.left_4 = 4100.0 if math.isnan(s.ranges[l4]) else s.ranges[l4]*1000;
-      	e.left_5 = 4100.0 if math.isnan(s.ranges[l5]) else s.ranges[l5]*1000;
-      	e.left_6 = 4100.0 if math.isnan(s.ranges[l6]) else s.ranges[l6]*1000;
-      	e.left_7 = 4100.0 if math.isnan(s.ranges[l7]) else s.ranges[l7]*1000;
-      	e.left_8 = 4100.0 if math.isnan(s.ranges[l8]) else s.ranges[l8]*1000;
-      	e.left_9 = 4100.0 if math.isnan(s.ranges[l9]) else s.ranges[l9]*1000;
-      	e.left_10 = 4100.0 if math.isnan(s.ranges[l10]) else s.ranges[l10]*1000;
-      	e.right_1 = 4100.0 if math.isnan(s.ranges[r1]) else s.ranges[r1]*1000;
-      	e.right_2 = 4100.0 if math.isnan(s.ranges[r2]) else s.ranges[r2]*1000;
-      	e.right_3 = 4100.0 if math.isnan(s.ranges[r3]) else s.ranges[r3]*1000;
-      	e.right_4 = 4100.0 if math.isnan(s.ranges[r4]) else s.ranges[r4]*1000;
-      	e.right_5 = 4100.0 if math.isnan(s.ranges[r5]) else s.ranges[r5]*1000;
-      	e.right_6 = 4100.0 if math.isnan(s.ranges[r6]) else s.ranges[r6]*1000;
-      	e.right_7 = 4100.0 if math.isnan(s.ranges[r7]) else s.ranges[r7]*1000;
-      	e.right_8 = 4100.0 if math.isnan(s.ranges[r8]) else s.ranges[r8]*1000;
-      	e.right_9 = 4100.0 if math.isnan(s.ranges[r9]) else s.ranges[r9]*1000;
-      	e.right_10 = 4100.0 if math.isnan(s.ranges[r10]) else s.ranges[r10]*1000;
-      	e.linear_x = a.linear.x
-      	e.angular_z = a.angular.z
-"""
-		for data in l:
-			lf = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
-			e.left.append(lf)
-		for data in r:
-			rg = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
-			e.right.append(rg)
+	"""
+	r1 = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+	r2 = int((-math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
+	r3 = int((-math.pi*20.0/180 - s.angle_min)/s.angle_increment); 
+	r4 = int((-math.pi*30.0/180 - s.angle_min)/s.angle_increment); 
+	r5 = int((-math.pi*40.0/180 - s.angle_min)/s.angle_increment); 
+	r6 = int((-math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+	r7 = int((-math.pi*60.0/180 - s.angle_min)/s.angle_increment); 
+	r8 = int((-math.pi*75.0/180 - s.angle_min)/s.angle_increment); 
+	r9 = int((-math.pi*90.0/180 - s.angle_min)/s.angle_increment); 
+	r10 = int((-math.pi*120.0/180 - s.angle_min)/s.angle_increment); 
+	l1 = int((math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
+	l2 = int((math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
+	l3 = int((math.pi*20.0/180 - s.angle_min)/s.angle_increment); 
+	l4 = int((math.pi*30.0/180 - s.angle_min)/s.angle_increment); 
+	l5 = int((math.pi*40.0/180 - s.angle_min)/s.angle_increment);
+	l6 = int((math.pi*45.0/180 - s.angle_min)/s.angle_increment); 
+	l7 = int((math.pi*60.0/180 - s.angle_min)/s.angle_increment); 
+	l8 = int((math.pi*75.0/180 - s.angle_min)/s.angle_increment); 
+	l9 = int((math.pi*90.0/180 - s.angle_min)/s.angle_increment); 
+	l10 = int((math.pi*120.0/180 - s.angle_min)/s.angle_increment);
+	"""
+    # e.left_1 = 4100.0 if math.isnan(s.ranges[l1]) else s.ranges[l1]*1000;
+    # e.left_2 = 4100.0 if math.isnan(s.ranges[l2]) else s.ranges[l2]*1000;
+    # e.left_3 = 4100.0 if math.isnan(s.ranges[l3]) else s.ranges[l3]*1000;
+    # e.left_4 = 4100.0 if math.isnan(s.ranges[l4]) else s.ranges[l4]*1000;
+    # e.left_5 = 4100.0 if math.isnan(s.ranges[l5]) else s.ranges[l5]*1000;
+    # e.left_6 = 4100.0 if math.isnan(s.ranges[l6]) else s.ranges[l6]*1000;
+    # e.left_7 = 4100.0 if math.isnan(s.ranges[l7]) else s.ranges[l7]*1000;
+    # e.left_8 = 4100.0 if math.isnan(s.ranges[l8]) else s.ranges[l8]*1000;
+    # e.left_9 = 4100.0 if math.isnan(s.ranges[l9]) else s.ranges[l9]*1000;
+    # e.left_10 = 4100.0 if math.isnan(s.ranges[l10]) else s.ranges[l10]*1000;
+    # e.right_1 = 4100.0 if math.isnan(s.ranges[r1]) else s.ranges[r1]*1000;
+    # e.right_2 = 4100.0 if math.isnan(s.ranges[r2]) else s.ranges[r2]*1000;
+    # e.right_3 = 4100.0 if math.isnan(s.ranges[r3]) else s.ranges[r3]*1000;
+    # e.right_4 = 4100.0 if math.isnan(s.ranges[r4]) else s.ranges[r4]*1000;
+    # e.right_5 = 4100.0 if math.isnan(s.ranges[r5]) else s.ranges[r5]*1000;
+    # e.right_6 = 4100.0 if math.isnan(s.ranges[r6]) else s.ranges[r6]*1000;
+    # e.right_7 = 4100.0 if math.isnan(s.ranges[r7]) else s.ranges[r7]*1000;
+    # e.right_8 = 4100.0 if math.isnan(s.ranges[r8]) else s.ranges[r8]*1000;
+    # e.right_9 = 4100.0 if math.isnan(s.ranges[r9]) else s.ranges[r9]*1000;
+    # e.right_10 = 4100.0 if math.isnan(s.ranges[r10]) else s.ranges[r10]*1000;
+    # e.linear_x = a.linear.x
+    # e.angular_z = a.angular.z
+
+	for data in l:
+		lf = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+		e.left.append(lf)
+	for data in r:
+		rg = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+		e.right.append(rg)
 	
 	e.linear_x = a.linear_x
 	e.angular_z = a.angular_z
