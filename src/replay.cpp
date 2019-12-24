@@ -119,12 +119,14 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 
 	std::vector<int> urg_sensor_left;
 	std::vector<int> urg_sensor_right;
-	for(unsigned int i = 0; i < left_sensor_value.size(); i++){
+	for (unsigned int i = 0; i < left_sensor_value.size(); i++)
+	{
 		int l = (pi * left_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double lv = isnan(msg->ranges[l]) ? 4100.0 : msg->ranges[l] * 1000;
 		urg_sensor_left.push_back(lv);
 	}
-	for(unsigned int i = 0; i < right_sensor_value.size(); i++){
+	for (unsigned int i = 0; i < right_sensor_value.size(); i++)
+	{
 		int r = (pi * right_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double rv = isnan(msg->ranges[r]) ? 4100.0 : msg->ranges[r] * 1000;
 		urg_sensor_right.push_back(rv);
@@ -161,9 +163,12 @@ void readEpisodes(string file)
 		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
 		//Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
 		//Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->left_6, s->left_7, s->left_8, s->left_9, s->left_10, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5, s->right_6, s->right_7, s->right_8, s->right_9, s->right_10);
-		std::vector<int> left_sensor,right_sensor;
-		left_sensor.reserve(left_sensor_value.size());
-		right_sensor.reserve(right_sensor_value.size());
+		std::vector<int> left_sensor(10, 0), right_sensor(10, 0);
+		//cout << "left_sensor_value.size()" << left_sensor_value.size() << endl;
+		//cout << "right_sensor_value.size()" << right_sensor_value.size() << endl;
+		// left_sensor.reserve(left_sensor_value.size());
+		// right_sensor.reserve(right_sensor_value.size());
+		/*
 		left_sensor[0] = s->left_1;
 		left_sensor[1] = s->left_2;
 		left_sensor[2] = s->left_3;
@@ -183,8 +188,20 @@ void readEpisodes(string file)
 		right_sensor[6] = s->right_7;
 		right_sensor[7] = s->right_8;
 		right_sensor[8] = s->right_9;
-		right_sensor[9] = s->right_10;
+		right_sensor[9] = s->right_10;*/
+		for (unsigned int i = 0; i < left_sensor.size(); i++)
+		{
+			left_sensor[i] = s->left[i];
+		}
+		for (unsigned int i = 0; i < right_sensor.size(); i++)
+		{
+			right_sensor[i] = s->right[i];
+		}
+
+		//std::cout << "left_sensor.size() :" << left_sensor.size() << std::endl;
 		Observation obs(left_sensor, right_sensor);
+		//cout << "obs.l.size() :" << obs.l.size() << endl;
+		//cout << "obs.log_l.size() :" << obs.log_l.size() << endl;
 
 		Action a = {s->linear_x, s->angular_z};
 		Event e(obs, a, 0.0);
@@ -193,6 +210,7 @@ void readEpisodes(string file)
 		if (e.time.toSec() < start)
 			continue;
 
+		std::cout << "e.observation.l.size():" << e.observation.l.size() << std::endl;
 		ep.append(e);
 
 		if (e.time.toSec() > end)
@@ -202,6 +220,7 @@ void readEpisodes(string file)
 
 int main(int argc, char **argv)
 {
+	//std::cout << "start" << endl;
 	init(argc, argv, "go_around");
 	NodeHandle n;
 	np = &n;
@@ -221,7 +240,7 @@ int main(int argc, char **argv)
 	motor_on.call(t);
 
 	geometry_msgs::Twist msg;
-//	pf.init();
+	//	pf.init();
 	Rate loop_rate(10);
 	Action act = {0.0, 0.0};
 	while (ok())
@@ -281,7 +300,7 @@ int main(int argc, char **argv)
 		out.right_8 = sensor_values.r8;
 		out.right_9 = sensor_values.r9;
 		out.right_10 = sensor_values.r10;*/
-		out.left_1 = sensor_values.l[0];
+		/*out.left_1 = sensor_values.l[0];
 		out.left_2 = sensor_values.l[1];
 		out.left_3 = sensor_values.l[2];
 		out.left_4 = sensor_values.l[3];
@@ -300,7 +319,15 @@ int main(int argc, char **argv)
 		out.right_7 = sensor_values.r[6];
 		out.right_8 = sensor_values.r[7];
 		out.right_9 = sensor_values.r[8];
-		out.right_10 = sensor_values.r[9];
+		out.right_10 = sensor_values.r[9];*/
+		for (unsigned int i = 0; i < sensor_values.l.size(); i++)
+		{
+			out.left.push_back(sensor_values.l[i]);
+		}
+		for (unsigned int i = 0; i < sensor_values.r.size(); i++)
+		{
+			out.right.push_back(sensor_values.r[i]);
+		}
 
 		cmdvel.publish(msg);
 		pfoe_out.publish(out);

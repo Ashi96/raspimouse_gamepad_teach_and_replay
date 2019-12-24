@@ -8,6 +8,10 @@ Observation::Observation()
 	ct_theta.reserve(20);
 	ct_linear_x.reserve(20);
 	ct_linear_y.reserve(20);
+	l.reserve(20);
+	r.reserve(20);
+	log_l.reserve(20);
+	log_r.reserve(20);
 }
 
 /*Observation::Observation(int left_f,int left_s, int right_s, int right_f)
@@ -19,7 +23,8 @@ Observation::Observation()
 	setValues(left_1,left_2,left_3,left_4,left_5,left_6,left_7,left_8,left_9,left_10,right_1,right_2,right_3,right_4,right_5,right_6,right_7,right_8,right_9,right_10);
 }*/
 
-Observation::Observation(vector<int> &left, vector<int> &right){
+Observation::Observation(vector<int> &left, vector<int> &right)
+{
 	setValues(left, right);
 }
 /*void Observation::setValues(int left_f,int left_s, int right_s, int right_f)
@@ -92,24 +97,64 @@ Observation::Observation(vector<int> &left, vector<int> &right){
 
 void Observation::setValues(vector<int> &left, vector<int> &right)
 {
-	for(unsigned int i = 0; i < left.size(); i++){
-		int n = left[i] > 0 ? left[i] : 1;
+	l.clear();
+	r.clear();
+	log_l.clear();
+	log_r.clear();
+
+	//cout << "left.size() (10):" << left.size() << endl;
+	//cout << "right.size() (10):" << right.size() << endl;
+	for (auto &e : left)
+	{
+		int n = e > 0 ? e : 1;
 		l.push_back(n);
 	}
-	for(unsigned int i = 0; i < right.size(); i++){
-		int n = right[i] > 0 ? right[i] : 1;
+	for (auto &e : right)
+	{
+		int n = e > 0 ? e : 1;
 		r.push_back(n);
 	}
+	for (auto &e : l)
+	{
+		double n = log((double)e);
+		log_l.push_back(n);
+	}
+	for (auto &e : r)
+	{
+		double n = log((double)e);
+		log_r.push_back(n);
+	}
+	/*for (unsigned int i = 0; i < left.size(); i++)
+	{
+		int n = left[i] > 0 ? left[i] : 1;
+		l.push_back(n);
+		//l[i] = n;
+		cout << "l" << i << ":" << l[i] << endl;
+	}
+	for (unsigned int i = 0; i < right.size(); i++)
+	{
+		int n = right[i] > 0 ? right[i] : 1;
+		//r.push_back(n);
+		r[i] = n;
+	}
+	cout << "l.size () :" << l.size() << endl;
 	//Idle中も呼び出される
 	//cout << "r:" << r[9] << endl;
 
-	for(unsigned int i = 0; i < l.size(); i++){
+	for (unsigned int i = 0; i < l.size(); i++)
+	{
 		double n = log((double)l[i]);
-		log_l.push_back(n);
+		//log_l.push_back(n);
+		log_l[i] = n;
 	}
-	for(unsigned int i = 0; i < r.size(); i++){
+	for (unsigned int i = 0; i < r.size(); i++)
+	{
 		double n = log((double)r[i]);
-		log_r.push_back(n);
-	}
-	//cout << "log_r:" << log_r[9] << endl;
+		//log_r.push_back(n);
+		log_r[i] = n;
+	}*/
+	//cout << "l.size() (10):" << l.size() << endl;
+	//cout << "log_l.size() (10):" << log_l.size() << endl;
+	//cout << "r.size() (10):" << r.size() << endl;
+	//cout << "log_r.size() (10):" << log_r.size() << endl;
 }

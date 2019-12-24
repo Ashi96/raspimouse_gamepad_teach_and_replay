@@ -11,6 +11,9 @@ from raspimouse_ros_2.msg import LightSensorValues, ButtonValues
 from raspimouse_gamepad_teach_and_replay.msg import Event
 from sensor_msgs.msg import LaserScan
 
+left_ang = [3, 15, 20, 30, 40, 45, 60, 75, 90, 120]
+right_ang = [3, 15, 20, 30, 40, 45, 60, 75, 90, 120]
+
 class Logger():
     def __init__(self):
         self.sensor_values = LaserScan()
@@ -65,6 +68,7 @@ class Logger():
       	e.linear_x = a.linear.x
       	e.angular_z = a.angular.z
 	"""
+	"""
 	r1 = int((-math.pi*3.0/180 - s.angle_min)/s.angle_increment); 
 	r2 = int((-math.pi*15.0/180 - s.angle_min)/s.angle_increment); 
 	r3 = int((-math.pi*20.0/180 - s.angle_min)/s.angle_increment); 
@@ -85,8 +89,18 @@ class Logger():
 	l8 = int((math.pi*75.0/180 - s.angle_min)/s.angle_increment); 
 	l9 = int((math.pi*90.0/180 - s.angle_min)/s.angle_increment); 
 	l10 = int((math.pi*120.0/180 - s.angle_min)/s.angle_increment);
-	print(r4) 
+	"""
+	r = []
+	l = []
+	for angle in left_ang:
+		n = int((math.pi*angle/180 - s.angle_min)/s.angle_increment)
+		l.append(n)
+	for angle in right_ang:
+		n = int((-math.pi*angle/180 - s.angle_min)/s.angle_increment)
+		r.append(n)
 
+	print(r4) 
+"""
       	e.left_1 = 4100.0 if math.isnan(s.ranges[l1]) else s.ranges[l1]*1000;
       	e.left_2 = 4100.0 if math.isnan(s.ranges[l2]) else s.ranges[l2]*1000;
       	e.left_3 = 4100.0 if math.isnan(s.ranges[l3]) else s.ranges[l3]*1000;
@@ -109,6 +123,16 @@ class Logger():
       	e.right_10 = 4100.0 if math.isnan(s.ranges[r10]) else s.ranges[r10]*1000;
       	e.linear_x = a.linear.x
       	e.angular_z = a.angular.z
+"""
+for data in l:
+	lf = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+	e.left.append(lf)
+for data in r:
+	rg = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+	e.right.append(rg)
+	
+	e.linear_x = a.linear_x
+	e.angular_z = a.angular_z
 
       	print(e)
 

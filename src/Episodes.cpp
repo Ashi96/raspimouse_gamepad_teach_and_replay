@@ -24,7 +24,7 @@ void Episodes::coordinatetransformation(void)
 	//double ct_x[4], ct_y[4], ct_theta[4];
 
 	//double ct_x[20], ct_y[20], ct_theta[20];
-	
+
 	/*constexpr double slf = sin(-3 * 3.141592 / 180.0);
   constexpr double sls = sin(-45 * 3.141592 / 180.0);
   constexpr double srs = sin(45 * 3.141592 / 180.0);
@@ -34,15 +34,15 @@ void Episodes::coordinatetransformation(void)
   constexpr double crs = cos(45 * 3.141592 / 180.0);
   constexpr double crf = cos(3 * 3.141592 / 180.0);*/
 
-  //constexpr double urg_deg[] = {3, 15, 30, 45, 60};
-  //constexpr cr[5], sr[5], cl[5], sl[5];
+	//constexpr double urg_deg[] = {3, 15, 30, 45, 60};
+	//constexpr cr[5], sr[5], cl[5], sl[5];
 
 	vector<double> ct_x, ct_y, ct_theta;
 	vector<double> cr, sr, cl, sl;
 	vector<float> right_angle = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
 	vector<float> left_angle = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
 
-	for(int i = 0; i < right_angle.size(); i++){
+	/*for(int i = 0; i < right_angle.size(); i++){
 		double crr = cos(right_angle[i] * 3.141592 / 180.0);
 		double srr = sin(right_angle[i] * 3.141592 / 180.0);
 		double cll = cos(-left_angle[i] * 3.141592 / 180.0);
@@ -51,9 +51,23 @@ void Episodes::coordinatetransformation(void)
 		sr.push_back(srr);
 		cl.push_back(cll);
 		sl.push_back(sll);
+	}*/
+	for (auto ra : right_angle)
+	{
+		double crr = cos(ra * 3.141592 / 180.0);
+		double srr = sin(ra * 3.141592 / 180.0);
+		cr.push_back(crr);
+		sr.push_back(srr);
+	}
+	for (auto la : left_angle)
+	{
+		double cll = cos(-la * 3.141592 / 180.0);
+		double sll = sin(-la * 3.141592 / 180.0);
+		cl.push_back(cll);
+		sl.push_back(sll);
 	}
 
- /* constexpr double cr1 = cos(3 * 3.141592 / 180.0);
+	/* constexpr double cr1 = cos(3 * 3.141592 / 180.0);
   constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(20 * 3.141592 / 180.0);
   constexpr double cr4 = cos(30 * 3.141592 / 180.0);
@@ -96,7 +110,10 @@ void Episodes::coordinatetransformation(void)
 
 	for (auto &e : data)
 	{
-	
+		ct_x.clear();
+		ct_y.clear();
+		//e.observation.ct_linear_x.clear();
+		//e.observation.ct_linear_y.clear();
 		//e.observation.ct_theta = {-3, -45, 45, 3}; //[lf,ls,rs,rf]
 		/*ct_x[0] = e.observation.lf * slf;
 		ct_y[0] = e.observation.lf * clf;
@@ -111,7 +128,7 @@ void Episodes::coordinatetransformation(void)
 		ct_y[3] = e.observation.rf * crf;
 		ct_theta[3] = 3.0;*/
 
-/*		ct_x[0] = e.observation.l1 * sl1;
+		/*		ct_x[0] = e.observation.l1 * sl1;
 		ct_y[0] = e.observation.l1 * cl1;
 		ct_x[1] = e.observation.l2 * sl2;
 		ct_y[1] = e.observation.l2 * cl2;
@@ -131,17 +148,20 @@ void Episodes::coordinatetransformation(void)
 		ct_y[8] = e.observation.r4 * cr4;
 		ct_x[9] = e.observation.r5 * sr5;
 		ct_y[9] = e.observation.r5 * cr5;*/
+		cout << "e.observation.log_l.size() (10):" << e.observation.log_l.size() << endl;
 
-		for(int i = 0; i < e.observation.log_l.size(); i++){
+		for (int i = 0; i < e.observation.log_l.size(); i++)
+		{
 			ct_x.push_back(e.observation.log_l[i] * sl[i]);
 			ct_y.push_back(e.observation.log_l[i] * cl[i]);
 		}
-		for(int i = 0; i < e.observation.log_r.size(); i++){
+		for (int i = 0; i < e.observation.log_r.size(); i++)
+		{
 			ct_x.push_back(e.observation.log_r[i] * sr[i]);
 			ct_y.push_back(e.observation.log_r[i] * cr[i]);
 		}
 
-/*		ct_x[0] = e.observation.log_l1 * sl1;
+		/*		ct_x[0] = e.observation.log_l1 * sl1;
 		ct_y[0] = e.observation.log_l1 * cl1;
 		ct_x[1] = e.observation.log_l2 * sl2;
 		ct_y[1] = e.observation.log_l2 * cl2;
@@ -204,18 +224,21 @@ void Episodes::coordinatetransformation(void)
 		e.observation.centroid_x = accumulate(ct_x.begin(), ct_x.end(), 0.0) / ct_x.size();
 		e.observation.centroid_y = accumulate(ct_y.begin(), ct_y.end(), 0.0) / ct_y.size();
 
-/*		for (int i = 0; i < 4; i++)
+		/*		for (int i = 0; i < 4; i++)
 		{
 			e.observation.ct_linear_x.push_back(ct_x[i] - e.observation.centroid_x);
 			e.observation.ct_linear_y.push_back(ct_y[i] - e.observation.centroid_y);
 			e.observation.ct_theta.push_back(ct_theta[i]);
 		}*/
 		// 20 <- number of sensors
+		cout << "ct_x.size() (20):" << ct_x.size() << endl;
+		cout << "ct_y.size() (20):" << ct_y.size() << endl;
 		for (int i = 0; i < ct_x.size(); i++)
 		{
 			e.observation.ct_linear_x.push_back(ct_x[i] - e.observation.centroid_x);
 			e.observation.ct_linear_y.push_back(ct_y[i] - e.observation.centroid_y);
 		}
+		cout << "e.observation.ct_linear_x.size()" << e.observation.ct_linear_x.size() << endl;
 	}
 }
 

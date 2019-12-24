@@ -1,4 +1,4 @@
-#ifndef __OBS_H_ 
+#ifndef __OBS_H_
 #define __OBS_H_
 
 #include <string>
@@ -7,8 +7,9 @@
 #include "ros/ros.h"
 using namespace std;
 
-class Observation{
-public:
+class Observation
+{
+  public:
 	Observation();
 	//Observation(int left_f,int left_s, int right_s, int right_f);
 	//Observation(int left_1,int left_2, int left_3, int left_4, int left_5, int left_6, int left_7, int left_8, int left_9, int left_10, int right_1, int right_2, int right_3, int right_4, int right_5, int right_6, int right_7, int right_8, int right_9, int right_10);
@@ -37,7 +38,7 @@ public:
 	vector<double> log_l;
 	vector<double> log_r;
 
-	vector<double> ct_theta;	//[lf_theta, ls_theta, rs_theta, rf_theta]
+	vector<double> ct_theta; //[lf_theta, ls_theta, rs_theta, rf_theta]
 	vector<double> ct_linear_x;
 	vector<double> ct_linear_y;
 	double centroid_x;

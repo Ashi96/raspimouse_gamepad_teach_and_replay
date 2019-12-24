@@ -18,6 +18,8 @@ int16 left_7
 int16 left_8
 int16 left_9
 int16 left_10
+int16[] right
+int16[] left
 float32 linear_x
 float32 angular_z
 float32 eta

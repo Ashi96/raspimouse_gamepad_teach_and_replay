@@ -11,9 +11,10 @@ using Eigen::MatrixXd;
 
 ParticleFilter::ParticleFilter(int num, Episodes *ep)
 {
-	double w = 1.0/num;
+	double w = 1.0 / num;
 	Particle p(w);
-	for(int i=0;i<num;i++){
+	for (int i = 0; i < num; i++)
+	{
 		particles.push_back(p);
 	}
 
@@ -22,11 +23,12 @@ ParticleFilter::ParticleFilter(int num, Episodes *ep)
 
 void ParticleFilter::init(void)
 {
-	cout << "particles.size : "<< particles.size() << endl;
+	cout << "particles.size : " << particles.size() << endl;
 	cout << episodes->data.size() << endl;
-	double w = 1.0/particles.size();
-	for(auto &p : particles){
-		p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
+	double w = 1.0 / particles.size();
+	for (auto &p : particles)
+	{
+		p.pos = prob.uniformRandInt(0, episodes->data.size() - 2);
 		p.weight = w;
 	}
 }
@@ -34,13 +36,15 @@ void ParticleFilter::init(void)
 void ParticleFilter::print(void)
 {
 	int i = 0;
-	for(auto &p : particles){
-		if(p.pos >= 0){
+	for (auto &p : particles)
+	{
+		if (p.pos >= 0)
+		{
 			auto d = episodes->data[p.pos];
 			cout << d.str() << endl;
 			i++;
 		}
-		if(i==10)
+		if (i == 10)
 			return;
 	}
 }
@@ -51,9 +55,11 @@ Action ParticleFilter::modeParticle(Episodes *ep)
 	double rot = 0.0;
 	double max = 0.0;
 	cout << "mode particle" << endl;
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 		auto e = ep->actionAt(p.pos);
-		if(max < p.weight){
+		if (max < p.weight)
+		{
 			max = p.weight;
 			fw = e->linear_x;
 			rot = e->angular_z;
@@ -67,21 +73,25 @@ Action ParticleFilter::modeParticle(Episodes *ep)
 
 Action ParticleFilter::mode(Episodes *ep)
 {
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 		auto e = ep->At(p.pos);
 		e->counter = 0;
 	}
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 		auto e = ep->At(p.pos);
 		e->counter++;
 	}
 	int max = 0;
 	Action *mode_a;
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 		auto e = ep->At(p.pos);
-		if(e->counter > max){
+		if (e->counter > max)
+		{
 			max = e->counter;
-			mode_a = ep->actionAt(p.pos+1);
+			mode_a = ep->actionAt(p.pos + 1);
 		}
 		e->counter = 0;
 	}
@@ -97,8 +107,9 @@ Action ParticleFilter::average(Episodes *ep)
 	double fw = 0.0;
 	double rot = 0.0;
 	cout << "avg" << endl;
-	for(auto &p : particles){
-		auto e = ep->actionAt(p.pos+1);
+	for (auto &p : particles)
+	{
+		auto e = ep->actionAt(p.pos + 1);
 		fw += p.weight * e->linear_x;
 		rot += p.weight * e->angular_z;
 	}
@@ -114,19 +125,21 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 	lastobscoordinatetransformation(obs);
 
-//	cout << "size: " << obs->ct_linear_x.size() << endl;
+	//	cout << "size: " << obs->ct_linear_x.size() << endl;
+	//cout << "ep.data.size():" << ep->data.size() << endl;
 
 	cout << "obs likelihood" << endl;
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 
-		double h = icplikelihood(episodes->obsAt(p.pos),obs);
-		
+		double h = icplikelihood(episodes->obsAt(p.pos), obs);
+
 		//double h = likelihood(episodes->obsAt(p.pos),obs);
 		//double h = likelihood(episodes->obsAt(p.pos),obs, episodes->actionAt(p.pos), act);
 		p.weight *= h;
 		out->eta += p.weight;
 	}
-/*
+	/*
 	cout << "mode particle" << endl;
 	double max = 0.0;
 	Particle *max_p = NULL;
@@ -142,13 +155,13 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 	normalize();
 	resampling(&particles);
-	
+
 	//cout << "OUTPUT " << fw << " " << rot << endl;
 
-	for(auto &p : particles){
+	for (auto &p : particles)
+	{
 		out->particles_pos.push_back(p.pos);
 	}
-
 
 	obs->ct_linear_x.clear();
 	obs->ct_linear_y.clear();
@@ -156,8 +169,8 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 	cout << "mode" << endl;
 	return mode(ep);
-//	cout << "avg" << endl;
-//	return average(ep);
+	//	cout << "avg" << endl;
+	//	return average(ep);
 }
 
 /*double ParticleFilter::likelihood(Observation *past, Observation *last)
@@ -216,7 +229,7 @@ Action ParticleFilter::sensorUpdate(Observation *obs, Action *act, Episodes *ep,
 
 double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 {
-	cout << "icplikelihood" << endl;
+	//cout << "icplikelihood" << endl;
 	MatrixXd w;
 	//MatrixXd s;
 	MatrixXd u, v;
@@ -228,30 +241,32 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	// 20 <- number of sensors
 	MatrixXd mpast(2, 20);
 	MatrixXd mlast(2, 20);
-	MatrixXd mm(2,1);
-	MatrixXd ms(2,1);
+	MatrixXd mm(2, 1);
+	MatrixXd ms(2, 1);
 
 	// 20 <- number of sensors
 	cout << "past->ct_linear_x.size()" << past->ct_linear_x.size() << endl;
-	cout << "past->ct_linear_y.size()" << past->ct_linear_y.size() << endl;
+	//cout << "past->ct_linear_y.size()" << past->ct_linear_y.size() << endl;
 	cout << "last->ct_linear_x.size()" << last->ct_linear_x.size() << endl;
-	cout << "last->ct_linear_y.size()" << last->ct_linear_y.size() << endl;
+	//cout << "last->ct_linear_y.size()" << last->ct_linear_y.size() << endl;
 	cout << "past->ct_linear_x[0] :" << past->ct_linear_x[0] << endl;
-	cout << "past->ct_linear_y[0] :" << past->ct_linear_y[0] << endl;
-	for(int i = 0; i < 20; i++){
+	//cout << "past->ct_linear_y[0] :" << past->ct_linear_y[0] << endl;
+	for (int i = 0; i < 20; i++)
+	{
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
 		//mpast(2, i) = past->ct_theta[i];
 	}
 	// 20 <- number of sensors
-	for(int i = 0; i < 20; i++){
+	for (int i = 0; i < 20; i++)
+	{
 		mlast(0, i) = last->ct_linear_x[i];
 		mlast(1, i) = last->ct_linear_y[i];
 		//mlast(2, i) = last->ct_theta[i];
 	}
 
 	w = mpast * mlast.transpose();
-	Eigen::JacobiSVD< MatrixXd > svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
+	Eigen::JacobiSVD<MatrixXd> svd(w, Eigen::ComputeThinU | Eigen::ComputeThinV);
 	//s = svd.singularValues();
 	u = svd.matrixU();
 	v = svd.matrixV();
@@ -273,11 +288,11 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	ms(0, 0) = last->centroid_x;
 	ms(1, 0) = last->centroid_y;
 	t = mm - R * ms;
-/*	cout << "--------------------" << endl;
+	/*	cout << "--------------------" << endl;
 	cout << "t :" << t << endl;
 	cout << "--------------------" << endl;*/
 
-/*
+	/*
 	double cf,cfl1, cfl2, cfl3, cfl4, cfl5, cfl6, cfl7, cfl8, cfl9, cfl10, cfr1, cfr2, cfr3, cfr4, cfr5, cfr6, cfr7, cfr8, cfr9, cfr10;
 	cfl1 = (past->log_l1 - last->log_l1) * (past->log_l1 - last->log_l1);
 	cfl2 = (past->log_l2 - last->log_l2) * (past->log_l2 - last->log_l2);
@@ -302,22 +317,24 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 */
 	double cfl = 0;
 	double cfr = 0;
-	cout << "cfl:" << cfl << endl;
-	cout << "cfr:" << cfr << endl;
-	for (int i = 0; i < past->log_l.size(); i++){
+	//cout << "past->logl.size()" << past->log_l.size() << endl;
+	//cout << "past->logr.size()" << past->log_r.size() << endl;
+	for (int i = 0; i < past->log_l.size(); i++)
+	{
 		cfl += (past->log_l[i] - last->log_l[i]) * (past->log_l[i] - last->log_l[i]);
 	}
-	for (int i = 0; i < past->log_r.size(); i++){
+	for (int i = 0; i < past->log_r.size(); i++)
+	{
 		cfr += (past->log_r[i] - last->log_r[i]) * (past->log_r[i] - last->log_r[i]);
 	}
-	cout << "cfl:" << cfl << endl;
-	cout << "cfr:" << cfr << endl;
+	//cout << "cfl:" << cfl << endl;
+	//cout << "cfr:" << cfr << endl;
 	//20 <- number of sensors
 	//cf = (cfl1 + cfl2 + cfl3 + cfl4 + cfl5 + cfl6 + cfl7 + cfl8 + cfl9 + cfl10 + cfr1 + cfr2 + cfr3 + cfr4 + cfr5 + cfr6 + cfr7 + cfr8 + cfr9 + cfr10) / 20;
 	double cf;
 	cf = (cfl + cfr) / (past->log_l.size() + past->log_r.size());
-	cout << "cf:" << cf << endl;
-	
+	//cout << "cf:" << cf << endl;
+
 	//double cf = 1;
 	/*cout << "past->log_l1:" << past->log_l1 << endl;
 	cout << "last->log_l1:" << last->log_l1 << endl;
@@ -326,86 +343,91 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	double ans;
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(2,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
 	//ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592));
-	ans = 1.0 / (1.0 + fabs(t(0,0))) * 1.0 / (1.0 + fabs(t(1,0))) * 1.0 / (1.0 + fabs(acos(R(0,0)) * 180 / 3.141592)) * 1.0 / (1.0 + cf);
+	ans = 1.0 / (1.0 + fabs(t(0, 0))) * 1.0 / (1.0 + fabs(t(1, 0))) * 1.0 / (1.0 + fabs(acos(R(0, 0)) * 180 / 3.141592)) * 1.0 / (1.0 + cf);
 	return ans;
 }
 
 void ParticleFilter::resampling(vector<Particle> *ps)
 {
-        vector<Particle> prev;
-        std::shuffle(ps->begin(),ps->end(),std::mt19937());
+	vector<Particle> prev;
+	std::shuffle(ps->begin(), ps->end(), std::mt19937());
 
-        double suweighteight = 0.0;
-        int num = (int)ps->size();
-        for(int i = 0;i < num ;i++){
-                ps->at(i).weight += suweighteight;
-                suweighteight = ps->at(i).weight;
-                prev.push_back(ps->at(i));
-        }
+	double suweighteight = 0.0;
+	int num = (int)ps->size();
+	for (int i = 0; i < num; i++)
+	{
+		ps->at(i).weight += suweighteight;
+		suweighteight = ps->at(i).weight;
+		prev.push_back(ps->at(i));
+	}
 
-        double step = suweighteight / num;
-        int* choice = new int[num];
-        //double accum = prob.uniformRand(0.0,1.0) / num;
-        double accum = step * prob.uniformRand(0.0,0.999999999);
-        int j = 0;
-        for(int i=0;i<num;i++){
-                while(prev[j].weight <= accum)
-                        j++;
+	double step = suweighteight / num;
+	int *choice = new int[num];
+	//double accum = prob.uniformRand(0.0,1.0) / num;
+	double accum = step * prob.uniformRand(0.0, 0.999999999);
+	int j = 0;
+	for (int i = 0; i < num; i++)
+	{
+		while (prev[j].weight <= accum)
+			j++;
 
-                if(j == num)
-                        j--;
+		if (j == num)
+			j--;
 
-                accum += step;
-                choice[i] = j;
-        }
+		accum += step;
+		choice[i] = j;
+	}
 
-        for(int i=0;i<num;i++){
-                int j = choice[i];
-                ps->at(i) = prev[j];
-                ps->at(i).weight = 1.0/num;
-        }
+	for (int i = 0; i < num; i++)
+	{
+		int j = choice[i];
+		ps->at(i) = prev[j];
+		ps->at(i).weight = 1.0 / num;
+	}
 
-        delete [] choice;
+	delete[] choice;
 }
 
 void ParticleFilter::normalize(void)
 {
 	double eta = 0.0;
-	for(auto &p : particles)
+	for (auto &p : particles)
 		eta += p.weight;
 
 	cout << "eta: " << eta << endl;
-	for(auto &p : particles)
+	for (auto &p : particles)
 		p.weight /= eta;
 }
 
 void ParticleFilter::motionUpdate(Episodes *ep)
 {
-/*
+	/*
 	cout << "no odom" << endl;
 	init();
 */
 	//cout << "odom" << endl;
-	for(auto &p : particles){
-		if(rand() % 10 == 0){
-			p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
+	for (auto &p : particles)
+	{
+		if (rand() % 10 == 0)
+		{
+			p.pos = prob.uniformRandInt(0, episodes->data.size() - 2);
 			continue;
 		}
 
 		int r = rand() % 3;
-		if(r==0)
+		if (r == 0)
 			p.pos++;
-		else if(r==1)
+		else if (r == 1)
 			p.pos += 2;
 
-		if(p.pos >= ep->data.size()-1)
-			p.pos = prob.uniformRandInt(0,episodes->data.size()-2);
-
+		if (p.pos >= ep->data.size() - 1)
+			p.pos = prob.uniformRandInt(0, episodes->data.size() - 2);
 	}
 }
 
-void ParticleFilter::lastobscoordinatetransformation(Observation *last){
-/*	double ct_x[4], ct_y[4], ct_theta[4];
+void ParticleFilter::lastobscoordinatetransformation(Observation *last)
+{
+	/*	double ct_x[4], ct_y[4], ct_theta[4];
 	constexpr double slf = sin(-3 * 3.141592 / 180.0);
 	constexpr double sls = sin(-45 * 3.141592 / 180.0);
 	constexpr double srs = sin(45 * 3.141592 / 180.0);
@@ -438,17 +460,17 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last){
 	std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
 	std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
 	int sum_dig_num = left_sensor_dig.size() + right_sensor_dig.size();
-	double ct_x[sum_dig_num], ct_y[sum_dig_num], ct_theta[sum_dig_num];
+	double ct_x[sum_dig_num], ct_y[sum_dig_num];
 	std::vector<float> cr, sr;
 	std::vector<float> cl, sl;
 	cr.reserve(right_sensor_dig.size());
 	sr.reserve(right_sensor_dig.size());
 	cl.reserve(left_sensor_dig.size());
 	sl.reserve(left_sensor_dig.size());
-	cout << "right_sensor_dig.size() :" << right_sensor_dig.size() << endl;
-	cout << "left_sensor_dig.size() :" << left_sensor_dig.size() << endl;
-	cout << "sum_dig_num :" << sum_dig_num << endl;
-/*constexpr double cr1 = cos(3 * 3.141592 / 180.0);
+	//cout << "right_sensor_dig.size() (10):" << right_sensor_dig.size() << endl;
+	//cout << "left_sensor_dig.size() (10):" << left_sensor_dig.size() << endl;
+	//cout << "sum_dig_num (20):" << sum_dig_num << endl;
+	/*constexpr double cr1 = cos(3 * 3.141592 / 180.0);
 constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double cr3 = cos(20 * 3.141592 / 180.0);
   constexpr double cr4 = cos(30 * 3.141592 / 180.0);
@@ -488,26 +510,44 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
   constexpr double sl8 = sin(-75 * 3.141592 / 180.0);
   constexpr double sl9 = sin(-90 * 3.141592 / 180.0);
   constexpr double sl10 = sin(-120 * 3.141592 / 180.0);*/
-  for (int i = 0; i < right_sensor_dig.size(); i++){
-	  cr[i] = cos(right_sensor_dig[i] * 3.141592 / 180.0);
-	  sr[i] = sin(right_sensor_dig[i] * 3.141592 / 180.0);
-  }
-  for (int i = 0; i < left_sensor_dig.size(); i++){
-	  cl[i] = cos(-left_sensor_dig[i] * 3.141592 / 180.0);
-	  sl[i] = sin(-left_sensor_dig[i] * 3.141592 / 180.0);
-  }
-  for (int i = 0; i < left_sensor_dig.size(); i++){
-	  ct_x[i] = last->log_l[i] * sl[i];
-	  ct_y[i] = last->log_l[i] * cl[i];
-  }
-  for (int i = left_sensor_dig.size(), j = 0; i < sum_dig_num; i++,j++){
-	  ct_x[i] = last->log_r[j] * sr[j];
-	  ct_y[i] = last->log_r[j] * cr[j];
-  }
-  cout << "ct_x[0]:" << ct_x[0] << endl;
-  cout << "ct_y[0]:" << ct_y[0] << endl;
+	/*for (int i = 0; i < right_sensor_dig.size(); i++)
+	{
+		cr[i] = cos(right_sensor_dig[i] * 3.141592 / 180.0);
+		sr[i] = sin(right_sensor_dig[i] * 3.141592 / 180.0);
+	}*/
+	for (auto ang : right_sensor_dig)
+	{
+		float c = cos(ang * 3.141592 / 180.0);
+		float s = sin(ang * 3.141592 / 180.0);
+		cr.push_back(c);
+		sr.push_back(s);
+	}
+	for (auto ang : left_sensor_dig)
+	{
+		float c = cos(-ang * 3.141592 / 180.0);
+		float s = sin(-ang * 3.141592 / 180.0);
+		cl.push_back(c);
+		sl.push_back(s);
+	}
+	/*for (int i = 0; i < left_sensor_dig.size(); i++)
+	{
+		cl[i] = cos(-left_sensor_dig[i] * 3.141592 / 180.0);
+		sl[i] = sin(-left_sensor_dig[i] * 3.141592 / 180.0);
+	}*/
+	for (int i = 0; i < left_sensor_dig.size(); i++)
+	{
+		ct_x[i] = last->log_l[i] * sl[i];
+		ct_y[i] = last->log_l[i] * cl[i];
+	}
+	for (int i = left_sensor_dig.size(), j = 0; i < sum_dig_num; i++, j++)
+	{
+		ct_x[i] = last->log_r[j] * sr[j];
+		ct_y[i] = last->log_r[j] * cr[j];
+	}
+	//cout << "ct_x[0]:" << ct_x[0] << endl;
+	//cout << "ct_y[0]:" << ct_y[0] << endl;
 
-/*	ct_x[0] = last->l1 * sl1;
+	/*	ct_x[0] = last->l1 * sl1;
 	ct_y[0] = last->l1 * cl1;
 	ct_x[1] = last->l2 * sl2;
 	ct_y[1] = last->l2 * cl2;
@@ -528,7 +568,7 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
 	ct_x[9] = last->r5 * sr5;
 	ct_y[9] = last->r5 * cr5;*/
 
-/*	ct_x[0] = last->log_l1 * sl1;
+	/*	ct_x[0] = last->log_l1 * sl1;
 	ct_y[0] = last->log_l1 * cl1;
 	ct_x[1] = last->log_l2 * sl2;
 	ct_y[1] = last->log_l2 * cl2;
@@ -571,23 +611,24 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
 
 	last->centroid_x = 0;
 	last->centroid_y = 0;
-//	last->centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3] + ct_x[4] + ct_x[5] + ct_x[6] + ct_x[7] + ct_x[8] + ct_x[9]) / 10.0;
-//	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3] + ct_y[4] + ct_y[5] + ct_y[6] + ct_y[7] + ct_y[8] + ct_y[9]) / 10.0;
+	//	last->centroid_x = (ct_x[0] + ct_x[1] + ct_x[2] + ct_x[3] + ct_x[4] + ct_x[5] + ct_x[6] + ct_x[7] + ct_x[8] + ct_x[9]) / 10.0;
+	//	last->centroid_y = (ct_y[0] + ct_y[1] + ct_y[2] + ct_y[3] + ct_y[4] + ct_y[5] + ct_y[6] + ct_y[7] + ct_y[8] + ct_y[9]) / 10.0;
 	double ct_x_sum = 0;
 	double ct_y_sum = 0;
-	for(int i = 0; i < sum_dig_num; i++){
+	for (int i = 0; i < sum_dig_num; i++)
+	{
 		ct_x_sum += ct_x[i];
 		ct_y_sum += ct_y[i];
 	}
 	last->centroid_x = (ct_x_sum) / sum_dig_num;
 	last->centroid_y = (ct_y_sum) / sum_dig_num;
 	// 20 <- number of sensors
-	for(int i = 0; i < sum_dig_num; i++){
+	for (int i = 0; i < sum_dig_num; i++)
+	{
 		last->ct_linear_x.push_back(ct_x[i] - last->centroid_x);
 		last->ct_linear_y.push_back(ct_y[i] - last->centroid_y);
 	}
-	cout << "last->ct_linear_x[0]:" << last->ct_linear_x[0] << endl;
-	cout << "last->ct_linear_y[0]:" << last->ct_linear_y[0] << endl;
-	cout << "last->ct_linear_x.size():" << last->ct_linear_x.size() << endl;
+	//cout << "last->ct_linear_x[0]:" << last->ct_linear_x[0] << endl;
+	//cout << "last->ct_linear_y[0]:" << last->ct_linear_y[0] << endl;
+	//cout << "last->ct_linear_x.size()(20):" << last->ct_linear_x.size() << endl;
 }
-
