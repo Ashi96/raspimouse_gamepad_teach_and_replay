@@ -124,12 +124,12 @@ class Logger():
       	e.linear_x = a.linear.x
       	e.angular_z = a.angular.z
 """
-for data in l:
-	lf = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
-	e.left.append(lf)
-for data in r:
-	rg = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
-	e.right.append(rg)
+		for data in l:
+			lf = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+			e.left.append(lf)
+		for data in r:
+			rg = 4100.0 if math.isnan(s.ranges[data]) else s.ranges[data]*1000
+			e.right.append(rg)
 	
 	e.linear_x = a.linear_x
 	e.angular_z = a.angular_z
