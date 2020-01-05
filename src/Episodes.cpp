@@ -54,15 +54,15 @@ void Episodes::coordinatetransformation(void)
 	}*/
 	for (auto ra : right_angle)
 	{
-		double crr = cos(ra * 3.141592 / 180.0);
-		double srr = sin(ra * 3.141592 / 180.0);
+		double crr = cos(-ra * 3.141592 / 180.0);
+		double srr = sin(-ra * 3.141592 / 180.0);
 		cr.push_back(crr);
 		sr.push_back(srr);
 	}
 	for (auto la : left_angle)
 	{
-		double cll = cos(-la * 3.141592 / 180.0);
-		double sll = sin(-la * 3.141592 / 180.0);
+		double cll = cos(la * 3.141592 / 180.0);
+		double sll = sin(la * 3.141592 / 180.0);
 		cl.push_back(cll);
 		sl.push_back(sll);
 	}

@@ -88,8 +88,10 @@ class Logger():
 	# l9 = int((math.pi*90.0/180 - s.angle_min)/s.angle_increment); 
 	# l10 = int((math.pi*120.0/180 - s.angle_min)/s.angle_increment);
 
-	r = [0] * 20
-	l = [0] * 20
+	# r = [0] * len(right_ang)
+	# l = [0] * len(left_ang)
+	r = []
+	l = []
 	for angle in left_ang:
 		n = int((math.pi*angle/180 - s.angle_min)/s.angle_increment)
 		l.append(n)

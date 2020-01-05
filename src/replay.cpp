@@ -121,13 +121,13 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 	std::vector<int> urg_sensor_right;
 	for (unsigned int i = 0; i < left_sensor_value.size(); i++)
 	{
-		int l = (-pi * left_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
+		int l = (pi * left_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double lv = isnan(msg->ranges[l]) ? 4100.0 : msg->ranges[l] * 1000;
 		urg_sensor_left.push_back(lv);
 	}
 	for (unsigned int i = 0; i < right_sensor_value.size(); i++)
 	{
-		int r = (pi * right_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
+		int r = (-pi * right_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double rv = isnan(msg->ranges[r]) ? 4100.0 : msg->ranges[r] * 1000;
 		urg_sensor_right.push_back(rv);
 	}

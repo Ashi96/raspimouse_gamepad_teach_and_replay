@@ -517,15 +517,15 @@ constexpr double cr2 = cos(15 * 3.141592 / 180.0);
 	}*/
 	for (auto ang : right_sensor_dig)
 	{
-		float c = cos(ang * 3.141592 / 180.0);
-		float s = sin(ang * 3.141592 / 180.0);
+		float c = cos(-ang * 3.141592 / 180.0);
+		float s = sin(-ang * 3.141592 / 180.0);
 		cr.push_back(c);
 		sr.push_back(s);
 	}
 	for (auto ang : left_sensor_dig)
 	{
-		float c = cos(-ang * 3.141592 / 180.0);
-		float s = sin(-ang * 3.141592 / 180.0);
+		float c = cos(ang * 3.141592 / 180.0);
+		float s = sin(ang * 3.141592 / 180.0);
 		cl.push_back(c);
 		sl.push_back(s);
 	}
