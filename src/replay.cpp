@@ -24,8 +24,16 @@ Episodes ep;
 ParticleFilter pf(1000, &ep);
 
 Observation sensor_values;
-std::vector<float> left_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
-std::vector<float> right_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+//std::vector<float> left_sensor_value = {13, 40, 67, 93, 120};
+//std::vector<float> right_sensor_value = {13, 40, 67, 93, 120};
+//std::vector<float> left_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+//std::vector<float> right_sensor_value = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+//std::vector<float> left_sensor_value = {2, 5, 9, 12, 16, 19, 23, 26, 30, 33, 37, 40, 43, 47, 50, 54, 57, 61, 64, 68, 71, 75, 78, 82, 85, 89, 92, 96, 99, 103, 106, 110, 113, 117, 120};
+//std::vector<float> right_sensor_value = {2, 5, 9, 12, 16, 19, 23, 26, 30, 33, 37, 40, 43, 47, 50, 54, 57, 61, 64, 68, 71, 75, 78, 82, 85, 89, 92, 96, 99, 103, 106, 110, 113, 117, 120};
+std::vector<float> left_sensor_value = {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120};
+std::vector<float> right_sensor_value = {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120};
+//std::vector<float> left_sensor_value = {1, 3, 5, 7, 9, 11, 13.1, 15.1, 17.1, 19.2, 21.2, 23.2, 25.2, 27.2, 29.2, 31.3, 33.3, 35.3, 37.3, 39.3, 41.3, 43.4, 45.4, 47.4, 49.4, 51.4, 53.4, 55.5, 57.5, 59.5, 61.5, 63.5, 65.5, 67.6, 70, 71.6, 73.6, 75.6, 77.6, 79.7, 81.7, 83.7, 85.7, 87.7, 89.7, 91.8, 93.8, 95.8, 97.8, 99.8, 101.8, 103.9, 105.9, 107.9, 109.9, 111.9, 113.9, 116, 118, 120};
+//std::vector<float> right_sensor_value = {1, 3, 5, 7, 9, 11, 13.1, 15.1, 17.1, 19.2, 21.2, 23.2, 25.2, 27.2, 29.2, 31.3, 33.3, 35.3, 37.3, 39.3, 41.3, 43.4, 45.4, 47.4, 49.4, 51.4, 53.4, 55.5, 57.5, 59.5, 61.5, 63.5, 65.5, 67.6, 70, 71.6, 73.6, 75.6, 77.6, 79.7, 81.7, 83.7, 85.7, 87.7, 89.7, 91.8, 93.8, 95.8, 97.8, 99.8, 101.8, 103.9, 105.9, 107.9, 109.9, 111.9, 113.9, 116, 118, 120};
 
 NodeHandle *np;
 int sum_forward = 0;
@@ -123,12 +131,16 @@ void sensorCallback(const sensor_msgs::LaserScan::ConstPtr &msg)
 	{
 		int l = (pi * left_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double lv = isnan(msg->ranges[l]) ? 4100.0 : msg->ranges[l] * 1000;
+		if (lv > 4100)
+			lv = 4100.0;
 		urg_sensor_left.push_back(lv);
 	}
 	for (unsigned int i = 0; i < right_sensor_value.size(); i++)
 	{
 		int r = (-pi * right_sensor_value[i] / 180 - msg->angle_min) / msg->angle_increment;
 		double rv = isnan(msg->ranges[r]) ? 4100.0 : msg->ranges[r] * 1000;
+		if (rv > 4100)
+			rv = 4100.0;
 		urg_sensor_right.push_back(rv);
 	}
 	//sensor_values.setValues(l1v, l2v, l3v, l4v, l5v, r1v, r2v, r3v, r4v, r5v);
@@ -163,7 +175,13 @@ void readEpisodes(string file)
 		auto s = i.instantiate<raspimouse_gamepad_teach_and_replay::Event>();
 		//Observation obs(s->left_forward, s->left_side, s->right_side, s->right_forward);
 		//Observation obs(s->left_1, s->left_2, s->left_3, s->left_4, s->left_5, s->left_6, s->left_7, s->left_8, s->left_9, s->left_10, s->right_1, s->right_2, s->right_3, s->right_4, s->right_5, s->right_6, s->right_7, s->right_8, s->right_9, s->right_10);
-		std::vector<int> left_sensor(10, 0), right_sensor(10, 0);
+
+		//std::vector<int> left_sensor(5, 0), right_sensor(5, 0);
+		//std::vector<int> left_sensor(10, 0), right_sensor(10, 0);
+		//std::vector<int> left_sensor(35, 0), right_sensor(35, 0);
+		std::vector<int> left_sensor(40, 0), right_sensor(40, 0);
+		//std::vector<int> left_sensor(60, 0), right_sensor(60, 0);
+
 		//cout << "left_sensor_value.size()" << left_sensor_value.size() << endl;
 		//cout << "right_sensor_value.size()" << right_sensor_value.size() << endl;
 		// left_sensor.reserve(left_sensor_value.size());
@@ -320,8 +338,14 @@ int main(int argc, char **argv)
 		out.right_8 = sensor_values.r[7];
 		out.right_9 = sensor_values.r[8];
 		out.right_10 = sensor_values.r[9];*/
-		out.left.resize(10);
-		out.right.resize(10);
+		//out.left.resize(35);
+		//out.right.resize(35);
+		//out.left.resize(10);
+		//out.right.resize(10);
+		out.left.resize(40);
+		out.right.resize(40);
+		//out.left.resize(60);
+		//out.right.resize(60);
 		for (unsigned int i = 0; i < sensor_values.l.size(); i++)
 		{
 			//out.left.push_back(sensor_values.l[i]);

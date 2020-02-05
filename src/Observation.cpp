@@ -5,13 +5,13 @@
 
 Observation::Observation()
 {
-	ct_theta.reserve(20);
-	ct_linear_x.reserve(20);
-	ct_linear_y.reserve(20);
-	l.reserve(20);
-	r.reserve(20);
-	log_l.reserve(20);
-	log_r.reserve(20);
+	ct_theta.reserve(10);
+	ct_linear_x.reserve(80);
+	ct_linear_y.reserve(80);
+	l.reserve(40);
+	r.reserve(40);
+	log_l.reserve(40);
+	log_r.reserve(40);
 }
 
 /*Observation::Observation(int left_f,int left_s, int right_s, int right_f)

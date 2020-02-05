@@ -239,8 +239,11 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	MatrixXd mm(3,1);
 	MatrixXd ms(3,1);*/
 	// 20 <- number of sensors
-	MatrixXd mpast(2, 20);
-	MatrixXd mlast(2, 20);
+	// -------
+	const int ns = 80;
+	// -------
+	MatrixXd mpast(2, ns);
+	MatrixXd mlast(2, ns);
 	MatrixXd mm(2, 1);
 	MatrixXd ms(2, 1);
 
@@ -249,16 +252,16 @@ double ParticleFilter::icplikelihood(Observation *past, Observation *last)
 	//cout << "past->ct_linear_y.size()" << past->ct_linear_y.size() << endl;
 	cout << "last->ct_linear_x.size()" << last->ct_linear_x.size() << endl;
 	//cout << "last->ct_linear_y.size()" << last->ct_linear_y.size() << endl;
-	cout << "past->ct_linear_x[0] :" << past->ct_linear_x[0] << endl;
+	//cout << "past->ct_linear_x[0] :" << past->ct_linear_x[0] << endl;
 	//cout << "past->ct_linear_y[0] :" << past->ct_linear_y[0] << endl;
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < ns; i++)
 	{
 		mpast(0, i) = past->ct_linear_x[i];
 		mpast(1, i) = past->ct_linear_y[i];
 		//mpast(2, i) = past->ct_theta[i];
 	}
 	// 20 <- number of sensors
-	for (int i = 0; i < 20; i++)
+	for (int i = 0; i < ns; i++)
 	{
 		mlast(0, i) = last->ct_linear_x[i];
 		mlast(1, i) = last->ct_linear_y[i];
@@ -457,8 +460,18 @@ void ParticleFilter::lastobscoordinatetransformation(Observation *last)
 		last->ct_theta.push_back(ct_theta[i]);
 	}*/
 	cout << "lastobscoordinatetransformation" << endl;
-	std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
-	std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	// -------
+	//std::vector<float> left_sensor_dig = {13, 40, 67, 93, 120};
+	//std::vector<float> right_sensor_dig = {13, 40, 67, 93, 120};
+	//std::vector<float> left_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	//std::vector<float> right_sensor_dig = {3, 15, 20, 30, 40, 45, 60, 75, 90, 120};
+	//std::vector<float> left_sensor_dig = {2, 5, 9, 12, 16, 19, 23, 26, 30, 33, 37, 40, 43, 47, 50, 54, 57, 61, 64, 68, 71, 75, 78, 82, 85, 89, 92, 96, 99, 103, 106, 110, 113, 117, 120};
+	//std::vector<float> right_sensor_dig = {2, 5, 9, 12, 16, 19, 23, 26, 30, 33, 37, 40, 43, 47, 50, 54, 57, 61, 64, 68, 71, 75, 78, 82, 85, 89, 92, 96, 99, 103, 106, 110, 113, 117, 120};
+	std::vector<float> left_sensor_dig = {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120};
+	std::vector<float> right_sensor_dig = {2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35, 38, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 81, 84, 87, 90, 93, 96, 99, 102, 105, 108, 111, 114, 117, 120};
+	//std::vector<float> left_sensor_dig = {1, 3, 5, 7, 9, 11, 13.1, 15.1, 17.1, 19.2, 21.2, 23.2, 25.2, 27.2, 29.2, 31.3, 33.3, 35.3, 37.3, 39.3, 41.3, 43.4, 45.4, 47.4, 49.4, 51.4, 53.4, 55.5, 57.5, 59.5, 61.5, 63.5, 65.5, 67.6, 70, 71.6, 73.6, 75.6, 77.6, 79.7, 81.7, 83.7, 85.7, 87.7, 89.7, 91.8, 93.8, 95.8, 97.8, 99.8, 101.8, 103.9, 105.9, 107.9, 109.9, 111.9, 113.9, 116, 118, 120};
+	//std::vector<float> right_sensor_dig = {1, 3, 5, 7, 9, 11, 13.1, 15.1, 17.1, 19.2, 21.2, 23.2, 25.2, 27.2, 29.2, 31.3, 33.3, 35.3, 37.3, 39.3, 41.3, 43.4, 45.4, 47.4, 49.4, 51.4, 53.4, 55.5, 57.5, 59.5, 61.5, 63.5, 65.5, 67.6, 70, 71.6, 73.6, 75.6, 77.6, 79.7, 81.7, 83.7, 85.7, 87.7, 89.7, 91.8, 93.8, 95.8, 97.8, 99.8, 101.8, 103.9, 105.9, 107.9, 109.9, 111.9, 113.9, 116, 118, 120};
+	// -------
 	int sum_dig_num = left_sensor_dig.size() + right_sensor_dig.size();
 	double ct_x[sum_dig_num], ct_y[sum_dig_num];
 	std::vector<float> cr, sr;
